@@ -3,15 +3,15 @@ import { About } from "@/components/top/about";
 import { ComingSoonSection } from "@/components/top/coming-soon-section";
 import { Hero } from "@/components/top/hero";
 import { TeamMirai } from "@/components/top/team-mirai";
-import { getDifficultyLevel } from "@/features/bill-difficulty/server/loaders/get-difficulty-level";
 import { BillDisclaimer } from "@/features/bills/client/components/bill-detail/bill-disclaimer";
 import { BillsByTagSection } from "@/features/bills/server/components/bills-by-tag-section";
+import { CurrentSessionSection } from "@/features/bills/server/components/current-session-section";
 import { FeaturedBillSection } from "@/features/bills/server/components/featured-bill-section";
 import { PreviousSessionSection } from "@/features/bills/server/components/previous-session-section";
+import { getBillsByDietSession } from "@/features/bills/server/loaders/get-bills-by-diet-session";
 import { loadHomeData } from "@/features/bills/server/loaders/load-home-data";
-import type { BillWithContent } from "@/features/bills/shared/types";
-import { HomeChatClient } from "@/features/chat/client/components/home-chat-client";
 import { CurrentDietSession } from "@/features/diet-sessions/client/components/current-diet-session";
+import { getActiveDietSession } from "@/features/diet-sessions/server/loaders/get-active-diet-session";
 import { getCurrentDietSession } from "@/features/diet-sessions/server/loaders/get-current-diet-session";
 import { getJapanTime } from "@/lib/utils/date";
 
@@ -20,33 +20,43 @@ export default async function Home() {
     await loadHomeData();
 
   // ゆくゆくタグ機能がマージされたらBFFに統合する
-  const [currentSession, currentDifficulty] = await Promise.all([
+  const [currentSession, activeSession] = await Promise.all([
     getCurrentDietSession(getJapanTime()),
-    getDifficultyLevel(),
+    getActiveDietSession(),
   ]);
-
-  const toBillChatContext = (bill: BillWithContent) => {
-    return {
-      name: `${bill.bill_content?.title}（${bill.name}）`,
-      summary: bill.bill_content?.summary,
-      tags: bill.tags?.map((tag) => tag.label) || [],
-      isFeatured: featuredBills.some((b) => b.id === bill.id),
-    };
-  };
+  const sessionSlug =
+    activeSession?.slug ??
+    currentSession?.slug ??
+    previousSessionData?.session.slug ??
+    undefined;
+  const displaySession = activeSession ?? currentSession;
+  const currentSessionBills = displaySession
+    ? await getBillsByDietSession(displaySession.id)
+    : [];
 
   return (
     <>
       <Hero />
 
-      {/* 本日の国会セクション */}
+      {/* 現在の会期 */}
       <CurrentDietSession session={currentSession} />
 
       {/* 議案一覧セクション */}
       <Container className="">
         <div className="py-10">
           <main className="flex flex-col gap-16">
-            {/* 注目の法案セクション */}
-            <FeaturedBillSection bills={featuredBills} />
+            {displaySession && (
+              <CurrentSessionSection
+                session={displaySession}
+                bills={currentSessionBills}
+              />
+            )}
+
+            {/* 注目の議案セクション */}
+            <FeaturedBillSection
+              bills={featuredBills}
+              sessionSlug={sessionSlug}
+            />
 
             {/* タグ別議案一覧セクション */}
             <BillsByTagSection billsByTag={billsByTag} />
@@ -57,7 +67,7 @@ export default async function Home() {
         </div>
       </Container>
 
-      {/* 前回の国会セクション（Archive） */}
+      {/* 前回の会期（Archive） */}
       {previousSessionData && (
         <div className="bg-mirai-surface-muted py-10">
           <Container>
@@ -74,21 +84,12 @@ export default async function Home() {
         {/* みらい議会とは セクション */}
         <About />
 
-        {/* チームみらいについて セクション */}
+        {/* 運営者について */}
         <TeamMirai />
 
         {/* 免責事項 */}
         <BillDisclaimer />
       </Container>
-
-      {/* チャット機能 */}
-      <HomeChatClient
-        currentDifficulty={currentDifficulty}
-        bills={billsByTag
-          .flatMap((x) => x.bills)
-          .concat(featuredBills)
-          .map(toBillChatContext)}
-      />
     </>
   );
 }

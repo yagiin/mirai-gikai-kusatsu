@@ -23,7 +23,7 @@ const _getCachedCurrentDietSession = unstable_cache(
   async (targetDate: string): Promise<DietSession | null> => {
     return findCurrentDietSession(targetDate);
   },
-  ["current-diet-session"],
+  ["current-diet-session-v2"],
   {
     revalidate: 3600, // 1時間（3600秒）
     tags: [CACHE_TAGS.DIET_SESSIONS],

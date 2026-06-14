@@ -79,7 +79,7 @@ const _getCachedPreviousSessionBills = unstable_cache(
 
     return billsWithContent;
   },
-  ["previous-session-bills"],
+  ["previous-session-bills-v2"],
   {
     revalidate: 600, // 10分
     tags: [CACHE_TAGS.BILLS, CACHE_TAGS.INTERVIEW_CONFIGS],
@@ -93,7 +93,7 @@ const _getCachedPreviousSessionBillCount = unstable_cache(
   ): Promise<number> => {
     return countPublishedBillsByDietSession(dietSessionId, difficultyLevel);
   },
-  ["previous-session-bill-count"],
+  ["previous-session-bill-count-v2"],
   {
     revalidate: 600,
     tags: [CACHE_TAGS.BILLS],

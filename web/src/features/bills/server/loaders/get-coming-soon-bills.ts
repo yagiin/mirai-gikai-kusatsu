@@ -54,7 +54,7 @@ const _getCachedComingSoonBills = unstable_cache(
       };
     });
   },
-  ["coming-soon-bills-list"],
+  ["coming-soon-bills-list-v2"],
   {
     revalidate: 600, // 10分（600秒）
     tags: [CACHE_TAGS.BILLS],

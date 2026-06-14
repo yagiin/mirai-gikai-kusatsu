@@ -11,7 +11,7 @@ const _getCachedDietSessions = unstable_cache(
   async (): Promise<DietSession[]> => {
     return findDietSessions();
   },
-  ["diet-sessions-list"],
+  ["diet-sessions-list-v2"],
   {
     revalidate: 3600,
     tags: [CACHE_TAGS.DIET_SESSIONS],

@@ -54,7 +54,7 @@ const _getCachedBillsByDietSession = unstable_cache(
 
     return billsWithContent;
   },
-  ["bills-by-diet-session"],
+  ["bills-by-diet-session-v2"],
   {
     revalidate: 600, // 10分
     tags: [CACHE_TAGS.BILLS, CACHE_TAGS.INTERVIEW_CONFIGS],

@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getDifficultyLevel } from "@/features/bill-difficulty/server/loaders/get-difficulty-level";
-import { getBillById } from "@/features/bills/server/loaders/get-bill-by-id";
 import { BillDetailLayout } from "@/features/bills/server/components/bill-detail/bill-detail-layout";
+import { getBillById } from "@/features/bills/server/loaders/get-bill-by-id";
 import { env } from "@/lib/env";
 import { routes } from "@/lib/routes";
 
@@ -26,7 +25,7 @@ export async function generateMetadata({
 
   // bill_contentのsummaryがあればそれを使用、なければデフォルト値を使用
   const description = bill.bill_content?.summary || "議案の詳細情報";
-  const defaultOgpUrl = new URL("/ogp.jpg", env.webUrl).toString();
+  const defaultOgpUrl = new URL("/ogp-kusatsu.png", env.webUrl).toString();
 
   // シェア用OGP画像（share_thumbnail_url > thumbnail_url > デフォルト）
   // ページ表示用のthumbnail_urlとは別に、SNSシェア用の画像を優先
@@ -63,19 +62,11 @@ export async function generateMetadata({
 
 export default async function BillDetailPage({ params }: BillDetailPageProps) {
   const { id } = await params;
-  const [billWithContent, currentDifficulty] = await Promise.all([
-    getBillById(id),
-    getDifficultyLevel(),
-  ]);
+  const billWithContent = await getBillById(id);
 
   if (!billWithContent) {
     notFound();
   }
 
-  return (
-    <BillDetailLayout
-      bill={billWithContent}
-      currentDifficulty={currentDifficulty}
-    />
-  );
+  return <BillDetailLayout bill={billWithContent} />;
 }

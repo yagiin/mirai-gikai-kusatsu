@@ -95,6 +95,9 @@ export function BillsCsvPanel() {
             r8-6-teireikai）を入力します。
           </p>
           <p>
+            submitted_dateは2026-06-08または2026/6/8の形式で入力できます。
+          </p>
+          <p>
             初回登録は、ダウンロードしたCSVのidを空欄にして行を追加してください。
           </p>
           <p>CSVに含まれていない既存の議案は削除されません。</p>

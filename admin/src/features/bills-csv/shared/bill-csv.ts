@@ -106,11 +106,32 @@ function parseOriginatingHouse(value: string | undefined, row: number) {
   );
 }
 
-function validateDate(value: string | null, row: number) {
-  if (value && !/^\d{4}-\d{2}-\d{2}$/.test(value)) {
-    throw new Error(`${row}行目: submitted_dateはYYYY-MM-DD形式にしてください`);
+function normalizeDate(value: string | null, row: number) {
+  if (!value) return null;
+
+  const match = value.match(/^(\d{4})[-/](\d{1,2})[-/](\d{1,2})$/);
+  if (!match) {
+    throw new Error(
+      `${row}行目: submitted_dateはYYYY-MM-DDまたはYYYY/MM/DD形式にしてください`
+    );
   }
-  return value;
+
+  const year = Number(match[1]);
+  const month = Number(match[2]);
+  const day = Number(match[3]);
+  const date = new Date(Date.UTC(year, month - 1, day));
+  if (
+    date.getUTCFullYear() !== year ||
+    date.getUTCMonth() !== month - 1 ||
+    date.getUTCDate() !== day
+  ) {
+    throw new Error(`${row}行目: submitted_dateに存在しない日付があります`);
+  }
+
+  return `${String(year).padStart(4, "0")}-${String(month).padStart(
+    2,
+    "0"
+  )}-${String(day).padStart(2, "0")}`;
 }
 
 export function parseBillCsv(csv: string): BillCsvRow[] {
@@ -145,7 +166,7 @@ export function parseBillCsv(csv: string): BillCsvRow[] {
       name: required(record.name, "name", row),
       status: parseStatus(record.status, row),
       statusNote: nullable(record.status_note),
-      submittedDate: validateDate(nullable(record.submitted_date), row),
+      submittedDate: normalizeDate(nullable(record.submitted_date), row),
       publishStatus: parsePublishStatus(record.publish_status, row),
       isFeatured: parseBoolean(record.is_featured, "is_featured", row),
       isReviewCompleted: parseBoolean(

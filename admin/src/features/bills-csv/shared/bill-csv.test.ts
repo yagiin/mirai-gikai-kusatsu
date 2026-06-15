@@ -47,6 +47,24 @@ existing-id,議第2号,enacted,可決,2026-06-02,draft,false,true,member,r8-6,,,
     );
   });
 
+  it("Excelで変換されやすいスラッシュ区切りの日付を正規化する", () => {
+    const csv = `${header}
+,議第4号,introduced,,2026/6/8,published,false,false,mayor,r8-6,gi-4,,議第4号,概要,本文,,,
+`;
+
+    expect(parseBillCsv(csv)[0]?.submittedDate).toBe("2026-06-08");
+  });
+
+  it("存在しない日付を拒否する", () => {
+    const csv = `${header}
+,議第5号,introduced,,2026/2/30,published,false,false,mayor,r8-6,gi-5,,議第5号,概要,本文,,,
+`;
+
+    expect(() => parseBillCsv(csv)).toThrow(
+      "2行目: submitted_dateに存在しない日付があります"
+    );
+  });
+
   it("Excel向けのBOM付きCSVを出力する", () => {
     expect(serializeBillCsv([])).toBe(`\uFEFF${header}\n\n`);
   });

@@ -43,7 +43,20 @@ existing-id,議第2号,enacted,可決,2026-06-02,draft,false,true,member,r8-6,,,
 `;
 
     expect(() => parseBillCsv(csv)).toThrow(
-      "2行目: is_featuredはtrueまたはfalseにしてください"
+      "2行目: is_featuredはtrue/falseまたは1/0にしてください"
+    );
+  });
+
+  it("Excelで大文字になる真偽値と1/0を読み込む", () => {
+    const csv = `${header}
+,議第4号,introduced,,2026-06-08,published,TRUE,0,mayor,r8-6,gi-4,,議第4号,概要,本文,,,
+`;
+
+    expect(parseBillCsv(csv)[0]).toEqual(
+      expect.objectContaining({
+        isFeatured: true,
+        isReviewCompleted: false,
+      })
     );
   });
 

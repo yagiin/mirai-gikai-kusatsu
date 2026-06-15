@@ -76,9 +76,12 @@ function nullable(value: string | undefined) {
 }
 
 function parseBoolean(value: string | undefined, column: string, row: number) {
-  if (value === "true") return true;
-  if (value === "false") return false;
-  throw new Error(`${row}行目: ${column}はtrueまたはfalseにしてください`);
+  const normalized = value?.trim().toLowerCase();
+  if (normalized === "true" || normalized === "1") return true;
+  if (normalized === "false" || normalized === "0") return false;
+  throw new Error(
+    `${row}行目: ${column}はtrue/falseまたは1/0にしてください`
+  );
 }
 
 function parseStatus(value: string | undefined, row: number) {

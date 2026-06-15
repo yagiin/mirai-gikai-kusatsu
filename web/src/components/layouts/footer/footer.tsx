@@ -34,14 +34,14 @@ function FooterLogoSection() {
       <Link
         href={routes.home()}
         aria-label="みらい議会 トップページ"
-        className="rounded-2xl border border-slate-900/10 bg-white px-5 py-4 shadow-sm"
+        className="rounded-2xl border border-slate-900/10 bg-white px-4 py-3 shadow-sm"
       >
         <Image
           src="/img/kusatsu-brand-lockup.png"
           alt="みらいと維新の風"
-          width={240}
-          height={199}
-          className="h-auto w-[210px] sm:w-[240px]"
+          width={180}
+          height={149}
+          className="h-auto w-[160px] sm:w-[180px]"
         />
       </Link>
     </div>

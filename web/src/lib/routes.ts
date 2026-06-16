@@ -13,6 +13,8 @@ export const routes = {
   privacy: () => "/privacy" as const,
   glossary: () => "/glossary" as const,
   glossaryTerm: (slug: string) => `/glossary/${slug}` as const,
+  generalQuestions: () => "/general-questions" as const,
+  generalQuestionDetail: (id: string) => `/general-questions/${id}` as const,
 
   // ── 議案 ──────────────────────────────────────────
   billDetail: (billId: string) => `/bills/${billId}` as const,

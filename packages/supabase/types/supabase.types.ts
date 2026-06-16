@@ -850,6 +850,71 @@ export type Database = {
         }
         Relationships: []
       }
+      general_questions: {
+        Row: {
+          answer_summary: string
+          created_at: string
+          diet_session_id: string
+          display_order: number
+          id: string
+          is_published: boolean
+          question_date: string | null
+          questioner_comment: string | null
+          questioner_group: string | null
+          questioner_name: string
+          source_url: string | null
+          summary: string
+          title: string
+          transcript: string | null
+          updated_at: string
+          video_url: string | null
+        }
+        Insert: {
+          answer_summary: string
+          created_at?: string
+          diet_session_id: string
+          display_order?: number
+          id?: string
+          is_published?: boolean
+          question_date?: string | null
+          questioner_comment?: string | null
+          questioner_group?: string | null
+          questioner_name: string
+          source_url?: string | null
+          summary: string
+          title: string
+          transcript?: string | null
+          updated_at?: string
+          video_url?: string | null
+        }
+        Update: {
+          answer_summary?: string
+          created_at?: string
+          diet_session_id?: string
+          display_order?: number
+          id?: string
+          is_published?: boolean
+          question_date?: string | null
+          questioner_comment?: string | null
+          questioner_group?: string | null
+          questioner_name?: string
+          source_url?: string | null
+          summary?: string
+          title?: string
+          transcript?: string | null
+          updated_at?: string
+          video_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "general_questions_diet_session_id_fkey"
+            columns: ["diet_session_id"]
+            isOneToOne: false
+            referencedRelation: "diet_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       tags: {
         Row: {
           created_at: string

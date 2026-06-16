@@ -11,6 +11,7 @@ const navigationLinks = [
   { href: routes.dietSessions(), label: "市議会会期管理" },
   { href: routes.tags(), label: "タグ管理" },
   { href: routes.glossary(), label: "用語解説管理" },
+  { href: routes.generalQuestions(), label: "一般質問管理" },
   { href: routes.interviews(), label: "インタビュー" },
   { href: routes.experts(), label: "有識者" },
   { href: routes.admins(), label: "管理者" },

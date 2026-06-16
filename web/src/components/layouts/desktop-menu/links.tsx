@@ -16,6 +16,11 @@ const links: FooterLinkItem[] = [
     external: false,
   },
   {
+    label: "一般質問",
+    href: routes.generalQuestions(),
+    external: false,
+  },
+  {
     label: "本家「みらい議会」",
     href: EXTERNAL_LINKS.ORIGINAL_MIRAI_GIKAI,
     external: true,

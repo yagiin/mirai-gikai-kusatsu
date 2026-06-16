@@ -14,6 +14,7 @@ export const routes = {
   admins: () => "/admins" as const,
   tags: () => "/tags" as const,
   glossary: () => "/glossary" as const,
+  generalQuestions: () => "/general-questions" as const,
   dietSessions: () => "/diet-sessions" as const,
   experts: () => "/experts" as const,
   interviews: () => "/interviews" as const,

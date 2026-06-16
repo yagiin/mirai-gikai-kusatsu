@@ -23,6 +23,10 @@ export const primaryLinks: FooterLink[] = [
     href: routes.glossary(),
   },
   {
+    label: "一般質問",
+    href: routes.generalQuestions(),
+  },
+  {
     label: "本家「みらい議会」",
     href: EXTERNAL_LINKS.ORIGINAL_MIRAI_GIKAI,
     external: true,

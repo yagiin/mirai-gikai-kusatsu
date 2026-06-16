@@ -8,8 +8,10 @@ import remarkParse from "remark-parse";
 import remarkRehype from "remark-rehype";
 import { unified } from "unified";
 import { DifficultyInfoCard } from "@/features/bills/server/components/bill-detail/difficulty-info-card";
+import type { GlossaryLinkTerm } from "@/features/glossary/shared/types";
 import { rehypeEmbedYouTube } from "./rehype-embed-youtube";
 import { rehypeExternalLinks } from "./rehype-external-links";
+import { rehypeGlossaryLinks } from "./rehype-glossary-links";
 import { rehypeInjectElement } from "./rehype-inject-element";
 import { rehypeWrapSections } from "./rehype-wrap-sections";
 
@@ -18,7 +20,13 @@ const sanitizeSchema = {
   ...defaultSchema,
   attributes: {
     ...defaultSchema.attributes,
-    a: [...(defaultSchema.attributes?.a || []), "target", "rel"],
+    a: [
+      ...(defaultSchema.attributes?.a || []),
+      "target",
+      "rel",
+      "title",
+      "className",
+    ],
   },
   tagNames: [
     ...(defaultSchema.tagNames || []),
@@ -33,7 +41,10 @@ const sanitizeSchema = {
  * @param options - オプション（currentLevel等）
  * @returns React Element（部分水和対応）
  */
-export async function parseMarkdown(markdown: string): Promise<ReactElement> {
+export async function parseMarkdown(
+  markdown: string,
+  options?: { glossaryTerms?: GlossaryLinkTerm[] }
+): Promise<ReactElement> {
   // Markdown → mdast（remarkBreaksでソフト改行をbreak nodeに変換）
   const remarkProcessor = unified().use(remarkParse).use(remarkBreaks);
   const parsed = remarkProcessor.parse(markdown);
@@ -50,6 +61,9 @@ export async function parseMarkdown(markdown: string): Promise<ReactElement> {
           tagName: "DifficultyInfoCard",
         },
       ],
+    })
+    .use(rehypeGlossaryLinks, {
+      terms: options?.glossaryTerms ?? [],
     })
     .use(rehypeSanitize, sanitizeSchema)
     .use(rehypeExternalLinks)

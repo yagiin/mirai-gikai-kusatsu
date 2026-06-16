@@ -1,18 +1,20 @@
+import type { GlossaryTerm } from "@/features/glossary/shared/types";
 import { parseMarkdown } from "@/lib/markdown";
 import type { BillWithContent } from "../../../shared/types";
 
 interface BillContentProps {
   bill: BillWithContent;
+  glossaryTerms: GlossaryTerm[];
 }
 
-export async function BillContent({ bill }: BillContentProps) {
+export async function BillContent({ bill, glossaryTerms }: BillContentProps) {
   const markdownContent = bill.bill_content?.content;
 
   if (!markdownContent) {
     return null;
   }
 
-  const content = await parseMarkdown(markdownContent);
+  const content = await parseMarkdown(markdownContent, { glossaryTerms });
 
   return (
     <div
@@ -27,6 +29,7 @@ export async function BillContent({ bill }: BillContentProps) {
             [&_li]:mb-4
             [&_a]:!underline [&_a]:!underline-offset-[3px]
             [&_a:hover]:opacity-70
+            [&_a.glossary-link]:font-semibold [&_a.glossary-link]:text-emerald-800
             [&_blockquote]:border-l-4 [&_blockquote]:border-gray-300
             [&_blockquote]:pl-4
             [&_pre]:bg-gray-100 [&_pre]:p-4 [&_pre]:rounded [&_pre]:overflow-x-auto

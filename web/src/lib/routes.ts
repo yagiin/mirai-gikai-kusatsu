@@ -11,6 +11,8 @@ export const routes = {
   home: () => "/" as const,
   terms: () => "/terms" as const,
   privacy: () => "/privacy" as const,
+  glossary: () => "/glossary" as const,
+  glossaryTerm: (slug: string) => `/glossary/${slug}` as const,
 
   // ── 議案 ──────────────────────────────────────────
   billDetail: (billId: string) => `/bills/${billId}` as const,

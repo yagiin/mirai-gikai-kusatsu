@@ -1,4 +1,6 @@
 import { Container } from "@/components/layouts/container";
+import { BillGlossarySection } from "@/features/glossary/server/components/bill-glossary-section";
+import { getBillGlossaryTerms } from "@/features/glossary/server/loaders/get-bill-glossary-terms";
 import { InterviewLandingSection } from "@/features/interview-config/client/components/interview-landing-section";
 import { getInterviewConfig } from "@/features/interview-config/server/loaders/get-interview-config";
 import { BillInterviewOpinionsSection } from "@/features/interview-report/server/components/bill-interview-opinions-section";
@@ -17,10 +19,12 @@ interface BillDetailLayoutProps {
 
 export async function BillDetailLayout({ bill }: BillDetailLayoutProps) {
   const showMiraiStance = bill.status === "preparing" || bill.mirai_stance;
-  const [interviewConfig, publicReportsResult] = await Promise.all([
-    getInterviewConfig(bill.id),
-    getPublicReportsByBillId(bill.id),
-  ]);
+  const [interviewConfig, publicReportsResult, glossaryTerms] =
+    await Promise.all([
+      getInterviewConfig(bill.id),
+      getPublicReportsByBillId(bill.id),
+      getBillGlossaryTerms(bill.id),
+    ]);
 
   return (
     <div className="container mx-auto pb-8 max-w-4xl">
@@ -39,7 +43,8 @@ export async function BillDetailLayout({ bill }: BillDetailLayoutProps) {
           />
         </div>
 
-        <BillContent bill={bill} />
+        <BillContent bill={bill} glossaryTerms={glossaryTerms} />
+        <BillGlossarySection terms={glossaryTerms} />
       </Container>
 
       <Container>

@@ -13,6 +13,7 @@ export const routes = {
   billNew: () => "/bills/new" as const,
   admins: () => "/admins" as const,
   tags: () => "/tags" as const,
+  glossary: () => "/glossary" as const,
   dietSessions: () => "/diet-sessions" as const,
   experts: () => "/experts" as const,
   interviews: () => "/interviews" as const,

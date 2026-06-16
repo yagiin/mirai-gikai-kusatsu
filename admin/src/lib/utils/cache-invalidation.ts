@@ -9,6 +9,7 @@ export const WEB_CACHE_TAGS = {
   BILLS: "bills",
   DIET_SESSIONS: "diet-sessions",
   INTERVIEW_CONFIGS: "interview-configs",
+  GLOSSARY: "glossary",
 } as const;
 
 export type WebCacheTag = (typeof WEB_CACHE_TAGS)[keyof typeof WEB_CACHE_TAGS];

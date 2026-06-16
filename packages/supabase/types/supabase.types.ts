@@ -188,6 +188,39 @@ export type Database = {
           },
         ]
       }
+      bills_glossary_terms: {
+        Row: {
+          bill_id: string
+          created_at: string
+          glossary_term_id: string
+        }
+        Insert: {
+          bill_id: string
+          created_at?: string
+          glossary_term_id: string
+        }
+        Update: {
+          bill_id?: string
+          created_at?: string
+          glossary_term_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bills_glossary_terms_bill_id_fkey"
+            columns: ["bill_id"]
+            isOneToOne: false
+            referencedRelation: "bills"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bills_glossary_terms_glossary_term_id_fkey"
+            columns: ["glossary_term_id"]
+            isOneToOne: false
+            referencedRelation: "glossary_terms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       chat_usage_events: {
         Row: {
           cost_usd: number
@@ -765,6 +798,57 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      glossary_terms: {
+        Row: {
+          aliases: string[]
+          comparison_notes: string | null
+          created_at: string
+          description: string
+          display_order: number
+          id: string
+          is_published: boolean
+          reading: string
+          related_term_slugs: string[]
+          short_description: string
+          slug: string
+          source_url: string | null
+          term: string
+          updated_at: string
+        }
+        Insert: {
+          aliases?: string[]
+          comparison_notes?: string | null
+          created_at?: string
+          description: string
+          display_order?: number
+          id?: string
+          is_published?: boolean
+          reading: string
+          related_term_slugs?: string[]
+          short_description: string
+          slug: string
+          source_url?: string | null
+          term: string
+          updated_at?: string
+        }
+        Update: {
+          aliases?: string[]
+          comparison_notes?: string | null
+          created_at?: string
+          description?: string
+          display_order?: number
+          id?: string
+          is_published?: boolean
+          reading?: string
+          related_term_slugs?: string[]
+          short_description?: string
+          slug?: string
+          source_url?: string | null
+          term?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
       tags: {
         Row: {

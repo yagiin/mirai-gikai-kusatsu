@@ -11,6 +11,11 @@ type FooterLinkItem = {
 
 const links: FooterLinkItem[] = [
   {
+    label: "用語解説",
+    href: routes.glossary(),
+    external: false,
+  },
+  {
     label: "本家「みらい議会」",
     href: EXTERNAL_LINKS.ORIGINAL_MIRAI_GIKAI,
     external: true,

@@ -43,25 +43,30 @@ const sanitizeSchema = {
  */
 export async function parseMarkdown(
   markdown: string,
-  options?: { glossaryTerms?: GlossaryLinkTerm[] }
+  options?: { glossaryTerms?: GlossaryLinkTerm[]; billEnhancements?: boolean }
 ): Promise<ReactElement> {
+  const useBillEnhancements = options?.billEnhancements ?? true;
+
   // Markdown → mdast（remarkBreaksでソフト改行をbreak nodeに変換）
   const remarkProcessor = unified().use(remarkParse).use(remarkBreaks);
   const parsed = remarkProcessor.parse(markdown);
   const mdast = (await remarkProcessor.run(parsed)) as typeof parsed;
 
   // mdast → hast（rehypeプラグイン適用）
-  const hast = await unified()
-    .use(remarkRehype)
-    .use(rehypeWrapSections)
-    .use(rehypeInjectElement, {
+  const rehypeProcessor = unified().use(remarkRehype);
+
+  if (useBillEnhancements) {
+    rehypeProcessor.use(rehypeWrapSections).use(rehypeInjectElement, {
       injections: [
         {
           targetH2Index: -1,
           tagName: "DifficultyInfoCard",
         },
       ],
-    })
+    });
+  }
+
+  const hast = await rehypeProcessor
     .use(rehypeGlossaryLinks, {
       terms: options?.glossaryTerms ?? [],
     })

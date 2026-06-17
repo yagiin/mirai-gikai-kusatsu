@@ -244,6 +244,7 @@ function GeneralQuestionEditor({
           </Field>
 
           <Field label="やさしい要約">
+            <MarkdownHelp />
             <Textarea
               value={value.summary}
               onChange={(event) => update("summary", event.target.value)}
@@ -252,6 +253,7 @@ function GeneralQuestionEditor({
           </Field>
 
           <Field label="市の答弁要約">
+            <MarkdownHelp />
             <Textarea
               value={value.answerSummary}
               onChange={(event) => update("answerSummary", event.target.value)}
@@ -260,6 +262,7 @@ function GeneralQuestionEditor({
           </Field>
 
           <Field label="質問者コメント">
+            <MarkdownHelp />
             <Textarea
               value={value.questionerComment}
               onChange={(event) =>
@@ -270,6 +273,7 @@ function GeneralQuestionEditor({
           </Field>
 
           <Field label="議事録原文">
+            <MarkdownHelp />
             <Textarea
               value={value.transcript}
               onChange={(event) => update("transcript", event.target.value)}
@@ -311,6 +315,15 @@ function GeneralQuestionEditor({
         </div>
       )}
     </div>
+  );
+}
+
+function MarkdownHelp() {
+  return (
+    <p className="text-xs text-gray-500">
+      太字は **強調したい文字**
+      のように入力できます。HTMLタグは使用しないでください。
+    </p>
   );
 }
 

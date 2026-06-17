@@ -1,6 +1,7 @@
 import type { GlossaryTermDetail } from "../../shared/types";
 import {
   findPublishedBillsByGlossaryTermId,
+  findPublishedGeneralQuestionsByGlossaryTermId,
   findPublishedGlossaryTermBySlug,
   findPublishedGlossaryTermsBySlugs,
 } from "../repositories/glossary-repository";
@@ -11,14 +12,17 @@ export async function getGlossaryTermBySlug(
   const term = await findPublishedGlossaryTermBySlug(slug);
   if (!term) return null;
 
-  const [relatedTerms, relatedBills] = await Promise.all([
-    findPublishedGlossaryTermsBySlugs(term.related_term_slugs),
-    findPublishedBillsByGlossaryTermId(term.id),
-  ]);
+  const [relatedTerms, relatedBills, relatedGeneralQuestions] =
+    await Promise.all([
+      findPublishedGlossaryTermsBySlugs(term.related_term_slugs),
+      findPublishedBillsByGlossaryTermId(term.id),
+      findPublishedGeneralQuestionsByGlossaryTermId(term.id),
+    ]);
 
   return {
     ...term,
     relatedTerms,
     relatedBills,
+    relatedGeneralQuestions,
   };
 }

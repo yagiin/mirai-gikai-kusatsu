@@ -14,6 +14,7 @@ import { detectRelatedBills } from "../server/actions/detect-related-bills";
 import { saveGlossaryTerm } from "../server/actions/save-glossary-term";
 import type {
   GlossaryBillOption,
+  GlossaryGeneralQuestionOption,
   GlossaryTermWithBills,
   SaveGlossaryTermInput,
 } from "../shared/types";
@@ -21,6 +22,7 @@ import type {
 type Props = {
   terms: GlossaryTermWithBills[];
   bills: GlossaryBillOption[];
+  generalQuestions: GlossaryGeneralQuestionOption[];
 };
 
 const emptyTerm: SaveGlossaryTermInput = {
@@ -36,6 +38,7 @@ const emptyTerm: SaveGlossaryTermInput = {
   isPublished: false,
   displayOrder: 0,
   billIds: [],
+  generalQuestionIds: [],
 };
 
 function toInput(term: GlossaryTermWithBills): SaveGlossaryTermInput {
@@ -53,15 +56,25 @@ function toInput(term: GlossaryTermWithBills): SaveGlossaryTermInput {
     isPublished: term.is_published,
     displayOrder: term.display_order,
     billIds: term.billIds,
+    generalQuestionIds: term.generalQuestionIds,
   };
 }
 
-export function GlossaryManager({ terms, bills }: Props) {
+function formatDate(date: string | null) {
+  if (!date) return "日付未定";
+  return date.replaceAll("-", "/");
+}
+
+export function GlossaryManager({ terms, bills, generalQuestions }: Props) {
   return (
     <div className="space-y-8">
       <section className="rounded-lg border bg-white p-6">
         <h2 className="mb-4 text-lg font-semibold">用語を追加</h2>
-        <GlossaryEditor initialValue={emptyTerm} bills={bills} />
+        <GlossaryEditor
+          initialValue={emptyTerm}
+          bills={bills}
+          generalQuestions={generalQuestions}
+        />
       </section>
 
       <section className="space-y-4">
@@ -71,6 +84,7 @@ export function GlossaryManager({ terms, bills }: Props) {
             key={term.id}
             initialValue={toInput(term)}
             bills={bills}
+            generalQuestions={generalQuestions}
           />
         ))}
       </section>
@@ -81,9 +95,11 @@ export function GlossaryManager({ terms, bills }: Props) {
 function GlossaryEditor({
   initialValue,
   bills,
+  generalQuestions,
 }: {
   initialValue: SaveGlossaryTermInput;
   bills: GlossaryBillOption[];
+  generalQuestions: GlossaryGeneralQuestionOption[];
 }) {
   const [value, setValue] = useState(initialValue);
   const [isOpen, setIsOpen] = useState(!initialValue.id);
@@ -101,6 +117,18 @@ function GlossaryEditor({
       checked
         ? [...value.billIds, billId]
         : value.billIds.filter((id) => id !== billId)
+    );
+  };
+
+  const toggleGeneralQuestion = (
+    generalQuestionId: string,
+    checked: boolean
+  ) => {
+    update(
+      "generalQuestionIds",
+      checked
+        ? [...value.generalQuestionIds, generalQuestionId]
+        : value.generalQuestionIds.filter((id) => id !== generalQuestionId)
     );
   };
 
@@ -129,11 +157,13 @@ function GlossaryEditor({
     }
 
     const billIds = result.billIds ?? [];
+    const generalQuestionIds = result.generalQuestionIds ?? [];
     update("billIds", billIds);
+    update("generalQuestionIds", generalQuestionIds);
     toast.success(
-      billIds.length > 0
-        ? `${billIds.length}件の議案を自動選択しました`
-        : "該当する議案は見つかりませんでした"
+      billIds.length + generalQuestionIds.length > 0
+        ? `議案${billIds.length}件、一般質問${generalQuestionIds.length}件を自動選択しました`
+        : "該当する議案・一般質問は見つかりませんでした"
     );
   };
 
@@ -165,7 +195,8 @@ function GlossaryEditor({
           </span>
           <span className="text-sm text-gray-500">
             {value.isPublished ? "公開中" : "下書き"}・関連議案
-            {value.billIds.length}件
+            {value.billIds.length}件・関連一般質問
+            {value.generalQuestionIds.length}件
           </span>
         </button>
       )}
@@ -306,6 +337,41 @@ function GlossaryEditor({
                     className="font-normal"
                   >
                     {bill.name}
+                  </Label>
+                </div>
+              ))}
+            </div>
+          </details>
+
+          <details className="rounded-md border p-4">
+            <summary className="cursor-pointer font-medium">
+              関連する一般質問を選ぶ（{value.generalQuestionIds.length}件）
+            </summary>
+            <p className="mt-3 text-sm text-gray-500">
+              「本文から自動選択」を押すと、一般質問の質問項目・要約・答弁要約・議事録原文からも探します。
+            </p>
+            <div className="mt-4 grid max-h-80 gap-3 overflow-y-auto md:grid-cols-2">
+              {generalQuestions.map((question) => (
+                <div
+                  key={question.id}
+                  className="flex items-start gap-2 text-sm"
+                >
+                  <Checkbox
+                    id={`glossary-${value.id ?? "new"}-general-question-${question.id}`}
+                    checked={value.generalQuestionIds.includes(question.id)}
+                    onCheckedChange={(checked) =>
+                      toggleGeneralQuestion(question.id, checked === true)
+                    }
+                  />
+                  <Label
+                    htmlFor={`glossary-${value.id ?? "new"}-general-question-${question.id}`}
+                    className="font-normal"
+                  >
+                    <span className="font-medium">{question.title}</span>
+                    <span className="ml-2 text-gray-500">
+                      {formatDate(question.questionDate)} /{" "}
+                      {question.questionerName}
+                    </span>
                   </Label>
                 </div>
               ))}

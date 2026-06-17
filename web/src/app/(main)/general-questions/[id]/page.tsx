@@ -4,6 +4,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Container } from "@/components/layouts/container";
 import { getPublishedGeneralQuestionById } from "@/features/general-questions/server/loaders/get-published-general-question-by-id";
+import { GeneralQuestionGlossarySection } from "@/features/glossary/server/components/general-question-glossary-section";
+import { getGeneralQuestionGlossaryTerms } from "@/features/glossary/server/loaders/get-general-question-glossary-terms";
 import { parseMarkdown } from "@/lib/markdown";
 import { routes } from "@/lib/routes";
 
@@ -33,17 +35,28 @@ export default async function GeneralQuestionDetailPage({ params }: Props) {
   const question = await getPublishedGeneralQuestionById(id);
   if (!question) notFound();
 
+  const glossaryTerms = await getGeneralQuestionGlossaryTerms(question.id);
   const [summary, answerSummary, questionerComment, transcript] =
     await Promise.all([
-      parseMarkdown(question.summary, { billEnhancements: false }),
-      parseMarkdown(question.answer_summary, { billEnhancements: false }),
+      parseMarkdown(question.summary, {
+        billEnhancements: false,
+        glossaryTerms,
+      }),
+      parseMarkdown(question.answer_summary, {
+        billEnhancements: false,
+        glossaryTerms,
+      }),
       question.questioner_comment
         ? parseMarkdown(question.questioner_comment, {
             billEnhancements: false,
+            glossaryTerms,
           })
         : null,
       question.transcript
-        ? parseMarkdown(question.transcript, { billEnhancements: false })
+        ? parseMarkdown(question.transcript, {
+            billEnhancements: false,
+            glossaryTerms,
+          })
         : null,
     ]);
 
@@ -104,6 +117,8 @@ export default async function GeneralQuestionDetailPage({ params }: Props) {
               </div>
             </section>
           )}
+
+          <GeneralQuestionGlossarySection terms={glossaryTerms} />
 
           {(question.source_url || question.video_url) && (
             <section className="mt-8 border-t pt-5">

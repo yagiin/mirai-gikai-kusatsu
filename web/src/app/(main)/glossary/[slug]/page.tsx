@@ -10,6 +10,11 @@ type Props = {
   params: Promise<{ slug: string }>;
 };
 
+function formatDate(date: string | null) {
+  if (!date) return "日付未定";
+  return date.replaceAll("-", "/");
+}
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const term = await getGlossaryTermBySlug(slug);
@@ -90,6 +95,25 @@ export default async function GlossaryTermPage({ params }: Props) {
                       className="font-semibold text-emerald-800 underline underline-offset-4"
                     >
                       {bill.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
+
+          {term.relatedGeneralQuestions.length > 0 && (
+            <section className="mt-8">
+              <h2 className="text-xl font-bold">この用語が出てくる一般質問</h2>
+              <ul className="mt-3 space-y-2">
+                {term.relatedGeneralQuestions.map((question) => (
+                  <li key={question.id}>
+                    <Link
+                      href={routes.generalQuestionDetail(question.id) as Route}
+                      className="font-semibold text-emerald-800 underline underline-offset-4"
+                    >
+                      {formatDate(question.question_date)} /{" "}
+                      {question.questioner_name} / {question.title}
                     </Link>
                   </li>
                 ))}

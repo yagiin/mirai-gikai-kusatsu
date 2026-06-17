@@ -850,7 +850,7 @@ export type Database = {
         }
         Relationships: []
       }
-      general_questions: {
+        general_questions: {
         Row: {
           answer_summary: string
           created_at: string
@@ -913,9 +913,42 @@ export type Database = {
             referencedRelation: "diet_sessions"
             referencedColumns: ["id"]
           },
-        ]
-      }
-      tags: {
+          ]
+        }
+        general_questions_glossary_terms: {
+          Row: {
+            created_at: string
+            general_question_id: string
+            glossary_term_id: string
+          }
+          Insert: {
+            created_at?: string
+            general_question_id: string
+            glossary_term_id: string
+          }
+          Update: {
+            created_at?: string
+            general_question_id?: string
+            glossary_term_id?: string
+          }
+          Relationships: [
+            {
+              foreignKeyName: "general_questions_glossary_terms_general_question_id_fkey"
+              columns: ["general_question_id"]
+              isOneToOne: false
+              referencedRelation: "general_questions"
+              referencedColumns: ["id"]
+            },
+            {
+              foreignKeyName: "general_questions_glossary_terms_glossary_term_id_fkey"
+              columns: ["glossary_term_id"]
+              isOneToOne: false
+              referencedRelation: "glossary_terms"
+              referencedColumns: ["id"]
+            },
+          ]
+        }
+        tags: {
         Row: {
           created_at: string
           description: string | null

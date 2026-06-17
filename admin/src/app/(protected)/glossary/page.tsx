@@ -8,9 +8,13 @@ export default async function GlossaryPage() {
     <div className="container mx-auto py-8">
       <h1 className="mb-2 text-2xl font-bold">用語解説管理</h1>
       <p className="mb-8 text-sm text-gray-600">
-        市議会で使われる言葉をやさしく説明し、関連する議案を設定します。
+        市議会で使われる言葉をやさしく説明し、関連する議案・一般質問を設定します。
       </p>
-      <GlossaryManager terms={data.terms} bills={data.bills} />
+      <GlossaryManager
+        terms={data.terms}
+        bills={data.bills}
+        generalQuestions={data.generalQuestions}
+      />
     </div>
   );
 }

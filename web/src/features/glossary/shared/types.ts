@@ -8,9 +8,17 @@ export type GlossaryBill = {
   name: string;
 };
 
+export type GlossaryGeneralQuestion = {
+  id: string;
+  title: string;
+  questioner_name: string;
+  question_date: string | null;
+};
+
 export type GlossaryTermDetail = GlossaryTerm & {
   relatedTerms: GlossaryTerm[];
   relatedBills: GlossaryBill[];
+  relatedGeneralQuestions: GlossaryGeneralQuestion[];
 };
 
 export type GlossaryLinkTerm = Pick<

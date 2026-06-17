@@ -31,7 +31,11 @@ export async function saveGlossaryTerm(input: SaveGlossaryTermInput) {
 
     await saveGlossaryTermRecord(input);
     revalidatePath(routes.glossary());
-    await invalidateWebCache([WEB_CACHE_TAGS.GLOSSARY, WEB_CACHE_TAGS.BILLS]);
+    await invalidateWebCache([
+      WEB_CACHE_TAGS.GLOSSARY,
+      WEB_CACHE_TAGS.BILLS,
+      WEB_CACHE_TAGS.GENERAL_QUESTIONS,
+    ]);
     return { success: true };
   } catch (error) {
     console.error("Save glossary term error:", error);

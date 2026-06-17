@@ -5,11 +5,19 @@ export type GlossaryTerm =
 
 export type GlossaryTermWithBills = GlossaryTerm & {
   billIds: string[];
+  generalQuestionIds: string[];
 };
 
 export type GlossaryBillOption = {
   id: string;
   name: string;
+};
+
+export type GlossaryGeneralQuestionOption = {
+  id: string;
+  title: string;
+  questionerName: string;
+  questionDate: string | null;
 };
 
 export type SaveGlossaryTermInput = {
@@ -26,4 +34,5 @@ export type SaveGlossaryTermInput = {
   isPublished: boolean;
   displayOrder: number;
   billIds: string[];
+  generalQuestionIds: string[];
 };

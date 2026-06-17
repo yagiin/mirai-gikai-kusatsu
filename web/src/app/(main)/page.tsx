@@ -1,6 +1,7 @@
 import { Container } from "@/components/layouts/container";
 import { About } from "@/components/top/about";
-import { ComingSoonSection } from "@/components/top/coming-soon-section";
+// 市議会運用では当面使わないため非表示。必要になったら下の呼び出しとあわせて戻す。
+// import { ComingSoonSection } from "@/components/top/coming-soon-section";
 import { Hero } from "@/components/top/hero";
 import { TeamMirai } from "@/components/top/team-mirai";
 import { BillDisclaimer } from "@/features/bills/client/components/bill-detail/bill-disclaimer";
@@ -13,16 +14,19 @@ import { loadHomeData } from "@/features/bills/server/loaders/load-home-data";
 import { CurrentDietSession } from "@/features/diet-sessions/client/components/current-diet-session";
 import { getActiveDietSession } from "@/features/diet-sessions/server/loaders/get-active-diet-session";
 import { getCurrentDietSession } from "@/features/diet-sessions/server/loaders/get-current-diet-session";
+import { HomeGeneralQuestionSection } from "@/features/general-questions/server/components/home-general-question-section";
+import { getPublishedGeneralQuestions } from "@/features/general-questions/server/loaders/get-published-general-questions";
 import { getJapanTime } from "@/lib/utils/date";
 
 export default async function Home() {
-  const { billsByTag, featuredBills, comingSoonBills, previousSessionData } =
+  const { billsByTag, featuredBills, previousSessionData } =
     await loadHomeData();
 
   // ゆくゆくタグ機能がマージされたらBFFに統合する
-  const [currentSession, activeSession] = await Promise.all([
+  const [currentSession, activeSession, generalQuestions] = await Promise.all([
     getCurrentDietSession(getJapanTime()),
     getActiveDietSession(),
+    getPublishedGeneralQuestions(),
   ]);
   const sessionSlug =
     activeSession?.slug ??
@@ -61,8 +65,11 @@ export default async function Home() {
             {/* タグ別議案一覧セクション */}
             <BillsByTagSection billsByTag={billsByTag} />
 
-            {/* Coming soonセクション */}
-            <ComingSoonSection bills={comingSoonBills} />
+            {/* 一般質問セクション */}
+            <HomeGeneralQuestionSection questions={generalQuestions} />
+
+            {/* Coming soonセクション: 市議会運用では当面非表示 */}
+            {/* <ComingSoonSection bills={comingSoonBills} /> */}
           </main>
         </div>
       </Container>

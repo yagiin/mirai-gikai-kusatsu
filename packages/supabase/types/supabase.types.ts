@@ -77,6 +77,7 @@ export type Database = {
       }
       bills: {
         Row: {
+          committee_name: string | null
           created_at: string
           diet_session_id: string | null
           id: string
@@ -100,6 +101,7 @@ export type Database = {
           use_knowledge_source_in_chat: boolean
         }
         Insert: {
+          committee_name?: string | null
           created_at?: string
           diet_session_id?: string | null
           id?: string
@@ -123,6 +125,7 @@ export type Database = {
           use_knowledge_source_in_chat?: boolean
         }
         Update: {
+          committee_name?: string | null
           created_at?: string
           diet_session_id?: string | null
           id?: string

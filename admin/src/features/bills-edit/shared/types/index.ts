@@ -9,6 +9,18 @@ export type BillInsert = Database["public"]["Tables"]["bills"]["Insert"];
 // 公開ステータス型
 export type BillPublishStatus = "draft" | "published" | "coming_soon";
 
+export const BILL_COMMITTEE_NAMES = [
+  "総務常任委員会",
+  "文教厚生常任委員会",
+  "産業建設常任委員会",
+  "予算委員会",
+  "決算委員会",
+  "委員会審査なし",
+] as const;
+
+export type BillCommitteeName = (typeof BILL_COMMITTEE_NAMES)[number];
+const BILL_COMMITTEE_NAME_VALUES = new Set<string>(BILL_COMMITTEE_NAMES);
+
 // 共通のバリデーションスキーマ
 const billBaseSchema = z.object({
   name: z
@@ -24,6 +36,13 @@ const billBaseSchema = z.object({
     "rejected",
   ]),
   originating_house: z.enum(["HR", "HC"]),
+  committee_name: z
+    .string()
+    .refine((val) => BILL_COMMITTEE_NAME_VALUES.has(val), {
+      message: "所管委員会を選択してください",
+    })
+    .nullable()
+    .optional(),
   status_note: z
     .string()
     .max(500, "ステータス備考は500文字以内で入力してください")

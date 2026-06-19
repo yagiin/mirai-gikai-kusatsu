@@ -33,6 +33,7 @@ export async function importBills(
       | "enacted"
       | "rejected";
     status_note: string | null;
+    committee_name: string | null;
     submitted_date: string | null;
     publish_status: "draft" | "published" | "coming_soon";
     is_featured: boolean;

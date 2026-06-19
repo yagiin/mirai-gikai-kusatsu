@@ -36,6 +36,7 @@ export function BillEditForm({ bill, dietSessions }: BillEditFormProps) {
       name: bill.name,
       status: bill.status,
       originating_house: bill.originating_house,
+      committee_name: bill.committee_name,
       status_note: bill.status_note,
       submitted_date: bill.submitted_date
         ? new Date(bill.submitted_date).toLocaleDateString("sv-SE", {

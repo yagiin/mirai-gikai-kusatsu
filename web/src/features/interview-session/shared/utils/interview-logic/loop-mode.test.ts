@@ -14,6 +14,7 @@ const makeBill = (
 ): BillWithContent => ({
   id: "bill-1",
   name: "テスト法案",
+  committee_name: null,
   is_featured: false,
   is_review_completed: true,
   originating_house: "HR",

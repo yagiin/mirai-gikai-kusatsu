@@ -30,6 +30,7 @@ export function BillCreateForm({ dietSessions }: BillCreateFormProps) {
       name: "",
       status: "preparing",
       originating_house: "HR",
+      committee_name: null,
       status_note: null,
       submitted_date: new Date().toLocaleDateString("sv-SE", {
         timeZone: "Asia/Tokyo",

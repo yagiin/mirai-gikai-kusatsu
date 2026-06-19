@@ -5,11 +5,21 @@ type BillStatus = Database["public"]["Enums"]["bill_status_enum"];
 type PublishStatus = Database["public"]["Enums"]["bill_publish_status"];
 type OriginatingHouse = Database["public"]["Enums"]["house_enum"];
 
+const BILL_COMMITTEE_NAMES = new Set<string>([
+  "総務常任委員会",
+  "文教厚生常任委員会",
+  "産業建設常任委員会",
+  "予算委員会",
+  "決算委員会",
+  "委員会審査なし",
+]);
+
 export const BILL_CSV_COLUMNS = [
   "id",
   "name",
   "status",
   "status_note",
+  "committee_name",
   "submitted_date",
   "publish_status",
   "is_featured",
@@ -31,6 +41,7 @@ export interface BillCsvRow {
   name: string;
   status: BillStatus;
   statusNote: string | null;
+  committeeName: string | null;
   submittedDate: string | null;
   publishStatus: PublishStatus;
   isFeatured: boolean;
@@ -109,6 +120,17 @@ function parseOriginatingHouse(value: string | undefined, row: number) {
   );
 }
 
+function parseCommitteeName(value: string | undefined, row: number) {
+  const committeeName = nullable(value);
+  if (!committeeName) return null;
+  if (!BILL_COMMITTEE_NAMES.has(committeeName)) {
+    throw new Error(
+      `${row}行目: committee_nameは指定された委員会名または空欄にしてください`
+    );
+  }
+  return committeeName;
+}
+
 function normalizeDate(value: string | null, row: number) {
   if (!value) return null;
 
@@ -169,6 +191,7 @@ export function parseBillCsv(csv: string): BillCsvRow[] {
       name: required(record.name, "name", row),
       status: parseStatus(record.status, row),
       statusNote: nullable(record.status_note),
+      committeeName: parseCommitteeName(record.committee_name, row),
       submittedDate: normalizeDate(nullable(record.submitted_date), row),
       publishStatus: parsePublishStatus(record.publish_status, row),
       isFeatured: parseBoolean(record.is_featured, "is_featured", row),
@@ -205,6 +228,7 @@ export function serializeBillCsv(rows: BillCsvRow[]) {
       row.name,
       row.status,
       row.statusNote,
+      row.committeeName,
       row.submittedDate,
       row.publishStatus,
       row.isFeatured,

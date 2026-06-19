@@ -67,6 +67,7 @@ export async function importBillsCsv(
       name: row.name,
       status: row.status,
       status_note: row.statusNote,
+      committee_name: row.committeeName,
       submitted_date: row.submittedDate
         ? `${row.submittedDate}T00:00:00+09:00`
         : null,

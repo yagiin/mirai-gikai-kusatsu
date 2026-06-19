@@ -24,6 +24,7 @@ export async function GET() {
       name: bill.name,
       status: bill.status,
       statusNote: bill.status_note,
+      committeeName: bill.committee_name,
       submittedDate: bill.submitted_date?.slice(0, 10) ?? null,
       publishStatus: bill.publish_status,
       isFeatured: bill.is_featured,

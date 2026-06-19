@@ -40,6 +40,7 @@ export async function BillDetailLayout({ bill }: BillDetailLayoutProps) {
             status={bill.status}
             originatingHouse={bill.originating_house}
             statusNote={bill.status_note}
+            committeeName={bill.committee_name}
           />
         </div>
 

@@ -98,6 +98,9 @@ export function BillsCsvPanel() {
             submitted_dateは2026-06-08または2026/6/8の形式で入力できます。
           </p>
           <p>
+            committee_nameには所管委員会名を入力します。未設定の場合は空欄にしてください。
+          </p>
+          <p>
             is_featuredとis_review_completedはtrue/false、TRUE/FALSE、1/0を入力できます。
           </p>
           <p>

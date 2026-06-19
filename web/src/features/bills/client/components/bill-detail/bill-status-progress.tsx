@@ -11,6 +11,7 @@ interface BillStatusProgressProps {
   status: BillStatusEnum;
   originatingHouse: HouseEnum;
   statusNote?: string | null;
+  committeeName?: string | null;
 }
 
 interface StatusBadgeProps {
@@ -97,6 +98,7 @@ export function BillStatusProgress({
   status,
   originatingHouse,
   statusNote,
+  committeeName,
 }: BillStatusProgressProps) {
   const isPreparing = status === "preparing";
   const currentStep = getCurrentStep(status);
@@ -113,6 +115,15 @@ export function BillStatusProgress({
         <div className="flex flex-col items-center gap-7">
           {/* ステータスメッセージバッジ */}
           <StatusBadge message={statusMessage} />
+
+          {committeeName && (
+            <div className="w-full max-w-md rounded-lg border border-primary/20 bg-primary/5 px-4 py-3 text-center">
+              <p className="text-xs font-bold text-gray-500">所管委員会</p>
+              <p className="mt-1 text-base font-bold text-black">
+                {committeeName}
+              </p>
+            </div>
+          )}
 
           {/* プログレスライン */}
           <div className="relative w-full max-w-md">

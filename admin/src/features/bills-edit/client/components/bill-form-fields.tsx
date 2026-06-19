@@ -26,9 +26,14 @@ import {
   type OriginatingHouse,
 } from "@/features/bills/shared/types";
 import type { DietSession } from "@/features/diet-sessions/shared/types";
-import type { BillCreateInput } from "../../shared/types";
+import {
+  BILL_COMMITTEE_NAMES,
+  type BillCreateInput,
+} from "../../shared/types";
 import { shouldAutoCloseInterviewOnBillStatus } from "../../shared/utils/should-auto-close-interview";
 import { ThumbnailUpload } from "./thumbnail-upload";
+
+const COMMITTEE_UNSET_VALUE = "__unset__";
 
 const BILL_STATUS_OPTIONS: Array<{ value: BillStatus; label: string }> = [
   { value: "preparing", label: "準備中" },
@@ -139,6 +144,40 @@ export function BillFormFields({
           )}
         />
       </div>
+
+      <FormField
+        control={control}
+        name="committee_name"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>所管委員会</FormLabel>
+            <Select
+              onValueChange={(value) =>
+                field.onChange(value === COMMITTEE_UNSET_VALUE ? null : value)
+              }
+              value={field.value ?? COMMITTEE_UNSET_VALUE}
+            >
+              <FormControl>
+                <SelectTrigger>
+                  <SelectValue placeholder="所管委員会を選択" />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent>
+                <SelectItem value={COMMITTEE_UNSET_VALUE}>未設定</SelectItem>
+                {BILL_COMMITTEE_NAMES.map((committeeName) => (
+                  <SelectItem key={committeeName} value={committeeName}>
+                    {committeeName}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <FormDescription>
+              議案を審査する常任委員会などを選択してください
+            </FormDescription>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
 
       <FormField
         control={control}

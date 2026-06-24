@@ -386,6 +386,7 @@ export async function findFeaturedBillsWithContents(
     `
     )
     .eq("is_featured", true)
+    .eq("publish_status", "published")
     .eq("bill_contents.difficulty_level", difficultyLevel)
     .order("submitted_date", { ascending: false, nullsFirst: false });
 

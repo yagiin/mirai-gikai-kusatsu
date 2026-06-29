@@ -6,12 +6,38 @@ import { type FormEvent, useRef, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { importBillsCsv } from "../server/actions/import-bills-csv";
 
-export function BillsCsvPanel() {
+const ALL_SESSIONS_VALUE = "__all_sessions__";
+
+interface BillsCsvPanelProps {
+  sessions: Array<{
+    id: string;
+    name: string;
+    slug: string | null;
+  }>;
+}
+
+export function BillsCsvPanel({ sessions }: BillsCsvPanelProps) {
   const router = useRouter();
   const formRef = useRef<HTMLFormElement>(null);
   const [isImporting, setIsImporting] = useState(false);
+  const [selectedSessionSlug, setSelectedSessionSlug] =
+    useState(ALL_SESSIONS_VALUE);
+
+  const downloadHref =
+    selectedSessionSlug === ALL_SESSIONS_VALUE
+      ? "/api/bills/csv"
+      : `/api/bills/csv?session_slug=${encodeURIComponent(
+          selectedSessionSlug
+        )}`;
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -51,12 +77,43 @@ export function BillsCsvPanel() {
         </div>
 
         <div className="flex flex-col gap-3 lg:flex-row lg:items-end">
-          <Button variant="outline" asChild className="lg:w-fit">
-            <a href="/api/bills/csv" download>
-              <Download className="mr-2 size-4" />
-              議案CSVをダウンロード
-            </a>
-          </Button>
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
+            <div className="w-full sm:w-72">
+              <label
+                htmlFor="bills-csv-session"
+                className="mb-1 block text-sm font-medium"
+              >
+                ダウンロードする会期
+              </label>
+              <Select
+                value={selectedSessionSlug}
+                onValueChange={setSelectedSessionSlug}
+              >
+                <SelectTrigger id="bills-csv-session">
+                  <SelectValue placeholder="会期を選択" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value={ALL_SESSIONS_VALUE}>
+                    すべての会期
+                  </SelectItem>
+                  {sessions
+                    .filter((session) => session.slug)
+                    .map((session) => (
+                      <SelectItem key={session.id} value={session.slug ?? ""}>
+                        {session.name}
+                      </SelectItem>
+                    ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <Button variant="outline" asChild className="lg:w-fit">
+              <a href={downloadHref} download>
+                <Download className="mr-2 size-4" />
+                議案CSVをダウンロード
+              </a>
+            </Button>
+          </div>
 
           <form
             ref={formRef}

@@ -5,10 +5,16 @@ import {
   serializeBillCsv,
 } from "@/features/bills-csv/shared/bill-csv";
 
-export async function GET() {
+interface GetBillsCsvRequest {
+  url: string;
+}
+
+export async function GET(request: GetBillsCsvRequest) {
   await requireAdmin();
 
-  const { bills, contents } = await findBillsForCsv();
+  const { searchParams } = new URL(request.url);
+  const sessionSlug = searchParams.get("session_slug");
+  const { bills, contents } = await findBillsForCsv(sessionSlug);
   const rows: BillCsvRow[] = bills.map((bill) => {
     const normal = contents.find(
       (content) =>
@@ -42,11 +48,14 @@ export async function GET() {
     };
   });
 
+  const filename = sessionSlug
+    ? `kusatsu-city-council-bills-${sessionSlug}.csv`
+    : "kusatsu-city-council-bills.csv";
+
   return new Response(serializeBillCsv(rows), {
     headers: {
       "Content-Type": "text/csv; charset=utf-8",
-      "Content-Disposition":
-        'attachment; filename="kusatsu-city-council-bills.csv"',
+      "Content-Disposition": `attachment; filename="${filename}"`,
       "Cache-Control": "no-store",
     },
   });

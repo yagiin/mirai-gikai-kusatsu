@@ -15,6 +15,8 @@ export const routes = {
   glossaryTerm: (slug: string) => `/glossary/${slug}` as const,
   generalQuestions: () => "/general-questions" as const,
   generalQuestionDetail: (id: string) => `/general-questions/${id}` as const,
+  manual: () => "/manual" as const,
+  billCsvManualPdf: () => "/manuals/kusatsu-bill-csv-manual.pdf" as const,
 
   // ── 議案 ──────────────────────────────────────────
   billDetail: (billId: string) => `/bills/${billId}` as const,

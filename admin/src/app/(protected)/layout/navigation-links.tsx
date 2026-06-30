@@ -12,6 +12,7 @@ const navigationLinks = [
   { href: routes.tags(), label: "タグ管理" },
   { href: routes.glossary(), label: "用語解説管理" },
   { href: routes.generalQuestions(), label: "一般質問管理" },
+  { href: routes.manual(), label: "更新マニュアル" },
   // 市議会版ではAIインタビュー機能を使わないため、管理メニューでは非表示。
   // 必要になった場合は以下を戻す。
   // { href: routes.interviews(), label: "インタビュー" },

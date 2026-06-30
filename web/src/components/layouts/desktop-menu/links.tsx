@@ -21,11 +21,6 @@ const links: FooterLinkItem[] = [
     external: false,
   },
   {
-    label: "更新マニュアル",
-    href: routes.manual(),
-    external: false,
-  },
-  {
     label: "本家「みらい議会」",
     href: EXTERNAL_LINKS.ORIGINAL_MIRAI_GIKAI,
     external: true,

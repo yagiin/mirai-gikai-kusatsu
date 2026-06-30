@@ -1,16 +1,9 @@
 import type { Metadata } from "next";
-import {
-  LegalList,
-  LegalPageLayout,
-  LegalParagraph,
-  LegalSectionTitle,
-  LegalSubSectionTitle,
-} from "@/components/layouts/legal-page-layout";
+import type { ReactNode } from "react";
 import { routes } from "@/lib/routes";
 
 export const metadata: Metadata = {
-  title: "更新マニュアル | みらい議会＠草津市",
-  description: "みらい議会＠草津市の議案CSV更新マニュアル",
+  title: "更新マニュアル | みらい議会＠草津市 Admin",
 };
 
 type ManualTableRow = {
@@ -24,7 +17,7 @@ const csvFields: ManualTableRow[] = [
     label: "id",
     example: "xxxxxxxx-...",
     description:
-      "管理用IDです。既存議案の更新に使うため、修正時は消さないでください。新規追加時のみ空欄にします。",
+      "管理用IDです。既存議案の更新時は消さないでください。新規追加時のみ空欄にします。",
   },
   {
     label: "name",
@@ -59,7 +52,8 @@ const csvFields: ManualTableRow[] = [
   {
     label: "publish_status",
     example: "published",
-    description: "公開状態です。公開サイトに表示するかどうかを決めます。",
+    description:
+      "公開状態です。publishedなら公開、draftなら下書きとして公開サイトには表示されません。",
   },
   {
     label: "is_featured",
@@ -76,8 +70,7 @@ const csvFields: ManualTableRow[] = [
   {
     label: "originating_type",
     example: "mayor",
-    description:
-      "提案者の種類です。市長提出ならmayor、議員提出ならmemberを入力します。",
+    description: "市長提出ならmayor、議員提出ならmemberを入力します。",
   },
   {
     label: "session_slug",
@@ -86,15 +79,9 @@ const csvFields: ManualTableRow[] = [
       "どの会期に属する議案かを指定します。会期別アーカイブページに表示するために使います。",
   },
   {
-    label: "slug",
-    example: "空欄",
-    description:
-      "現在の運用では通常は空欄で構いません。画面には表示されません。",
-  },
-  {
     label: "source_url",
     example: "https://...",
-    description: "議案資料などの出典URLです。元資料を管理するために使います。",
+    description: "議案資料などの出典URLです。元資料の管理に使います。",
   },
   {
     label: "normal_title",
@@ -112,7 +99,7 @@ const csvFields: ManualTableRow[] = [
     label: "normal_content",
     example: "## 何を決める議案？",
     description:
-      "通常表示の本文です。議案詳細ページの本文として表示されます。Markdown形式で見出しや箇条書きを使えます。",
+      "通常表示の本文です。Markdown形式で見出しや箇条書きを使えます。",
   },
   {
     label: "hard_title",
@@ -187,29 +174,29 @@ const publishStatusRows: ManualTableRow[] = [
 
 const frequentEditRows: ManualTableRow[] = [
   {
-    label: "一覧や詳細ページのタイトルを直したい",
+    label: "タイトルを直したい",
     example: "normal_title",
     description: "必要に応じてhard_titleも編集します。",
   },
   {
-    label: "議案カードの短い説明を直したい",
+    label: "短い説明を直したい",
     example: "normal_summary",
     description: "必要に応じてhard_summaryも編集します。",
   },
   {
-    label: "議案詳細ページの本文を直したい",
+    label: "本文を直したい",
     example: "normal_content",
     description: "必要に応じてhard_contentも編集します。",
   },
   {
     label: "公開・非公開を切り替えたい",
     example: "publish_status",
-    description: "公開する場合はpublished、非公開にする場合はdraftにします。",
+    description: "公開はpublished、非公開はdraftにします。",
   },
   {
     label: "トップページの注目議案に出したい",
     example: "is_featured",
-    description: "trueにします。注目議案から外す場合はfalseにします。",
+    description: "出す場合はtrue、外す場合はfalseにします。",
   },
   {
     label: "確認中表示を消したい",
@@ -232,17 +219,12 @@ const unavailableRows: ManualTableRow[] = [
   {
     label: "用語解説との関連付け",
     example: "用語解説管理",
-    description: "CSVではなく、管理画面の用語解説管理で編集します。",
+    description: "管理画面の用語解説管理で編集します。",
   },
   {
     label: "みらいと維新の風の見解",
     example: "議案編集画面",
     description: "議案編集画面の「みらいと維新の風のスタンス」で編集します。",
-  },
-  {
-    label: "タグ",
-    example: "タグ関連の管理画面",
-    description: "CSVでは更新できません。",
   },
   {
     label: "一般質問",
@@ -256,11 +238,11 @@ function ManualSection({
   children,
 }: {
   title: string;
-  children: React.ReactNode;
+  children: ReactNode;
 }) {
   return (
-    <section className="space-y-4">
-      <LegalSectionTitle>{title}</LegalSectionTitle>
+    <section className="space-y-4 rounded-lg border bg-white p-6 shadow-sm">
+      <h2 className="text-xl font-bold text-gray-900">{title}</h2>
       {children}
     </section>
   );
@@ -278,28 +260,25 @@ function ManualTable({
   thirdHeader: string;
 }) {
   return (
-    <div className="overflow-x-auto rounded-2xl border border-slate-200 bg-white">
+    <div className="overflow-x-auto rounded-lg border">
       <table className="min-w-full border-collapse text-left text-sm">
-        <thead className="bg-slate-50 text-slate-700">
+        <thead className="bg-gray-50 text-gray-700">
           <tr>
-            <th className="min-w-40 border-b border-slate-200 px-4 py-3 font-semibold">
+            <th className="min-w-40 border-b px-4 py-3 font-semibold">
               {firstHeader}
             </th>
-            <th className="min-w-48 border-b border-slate-200 px-4 py-3 font-semibold">
+            <th className="min-w-48 border-b px-4 py-3 font-semibold">
               {secondHeader}
             </th>
-            <th className="min-w-96 border-b border-slate-200 px-4 py-3 font-semibold">
+            <th className="min-w-96 border-b px-4 py-3 font-semibold">
               {thirdHeader}
             </th>
           </tr>
         </thead>
-        <tbody className="text-slate-600">
+        <tbody className="text-gray-700">
           {rows.map((row) => (
-            <tr
-              key={row.label}
-              className="border-b border-slate-100 last:border-b-0"
-            >
-              <td className="px-4 py-3 font-semibold text-slate-900">
+            <tr className="border-b last:border-b-0" key={row.label}>
+              <td className="px-4 py-3 font-semibold text-gray-900">
                 <code>{row.label}</code>
               </td>
               <td className="px-4 py-3">
@@ -316,26 +295,30 @@ function ManualTable({
 
 export default function ManualPage() {
   return (
-    <LegalPageLayout
-      title="更新マニュアル"
-      description="議案CSVを使って、会期ごとに議案情報を更新するための手順です。"
-    >
+    <div className="space-y-8">
+      <div>
+        <h1 className="text-2xl font-bold text-gray-900">更新マニュアル</h1>
+        <p className="mt-1 text-gray-600">
+          議案CSVを使って、会期ごとに議案情報を更新するための手順です。
+        </p>
+      </div>
+
       <ManualSection title="議案CSV更新マニュアル">
-        <LegalParagraph>
+        <p className="leading-relaxed text-gray-700">
           このマニュアルは、管理画面の「議案管理」からダウンロードできるCSVを編集し、
           みらい議会＠草津市の公開サイトに反映するための説明です。
-        </LegalParagraph>
-        <LegalParagraph>
+        </p>
+        <p className="leading-relaxed text-gray-700">
           CSVは「1行 = 1つの議案」です。すでに登録済みの議案を修正する場合は、
           ダウンロードしたCSVの該当行を編集してアップロードします。新しい議案を追加する場合は、
           <code>id</code>を空欄にした行を追加します。
-        </LegalParagraph>
+        </p>
         <p>
           <a
+            className="inline-flex rounded-md bg-gray-900 px-4 py-2 font-semibold text-sm text-white hover:bg-gray-700"
             href={routes.billCsvManualPdf()}
-            target="_blank"
             rel="noreferrer"
-            className="inline-flex rounded-full border border-slate-900 px-5 py-2 text-sm font-semibold text-slate-900 transition-colors hover:bg-slate-900 hover:text-white"
+            target="_blank"
           >
             PDF版を開く
           </a>
@@ -343,37 +326,40 @@ export default function ManualPage() {
       </ManualSection>
 
       <ManualSection title="基本の流れ">
-        <LegalList
-          ordered
-          items={[
-            "管理画面にログインします。",
-            "「議案管理」を開きます。",
-            "会期を選び、「議案CSVをダウンロード」を押します。",
-            "CSVをExcelなどで開いて編集します。",
-            "CSV形式のまま保存します。",
-            "管理画面の「編集したCSV」からファイルを選び、「CSVをアップロード」を押します。",
-            "公開サイトで表示を確認します。",
-          ]}
-        />
+        <ol className="list-decimal space-y-1 pl-5 leading-relaxed text-gray-700">
+          <li>管理画面にログインします。</li>
+          <li>「議案管理」を開きます。</li>
+          <li>会期を選び、「議案CSVをダウンロード」を押します。</li>
+          <li>CSVをExcelなどで開いて編集します。</li>
+          <li>CSV形式のまま保存します。</li>
+          <li>
+            管理画面の「編集したCSV」からファイルを選び、「CSVをアップロード」を押します。
+          </li>
+          <li>公開サイトで表示を確認します。</li>
+        </ol>
       </ManualSection>
 
       <ManualSection title="編集時の注意">
-        <LegalList
-          items={[
-            "文字化けを避けるため、ダウンロードしたCSVをそのまま編集してください。",
-            "既存議案を修正する場合、idは変更しないでください。",
-            "新規議案を追加する場合だけ、idを空欄にしてください。",
-            "CSVに含まれていない既存議案は削除されません。",
-            "日付は2026-06-08または2026/6/8の形式で入力できます。",
-            "true / falseの列は、ExcelでTRUE / FALSEと表示されることがあります。アップロード時には小文字のtrue / falseまたは1 / 0として扱えます。",
-          ]}
-        />
+        <ul className="list-disc space-y-1 pl-5 leading-relaxed text-gray-700">
+          <li>
+            文字化けを避けるため、ダウンロードしたCSVをそのまま編集してください。
+          </li>
+          <li>既存議案を修正する場合、idは変更しないでください。</li>
+          <li>新規議案を追加する場合だけ、idを空欄にしてください。</li>
+          <li>CSVに含まれていない既存議案は削除されません。</li>
+          <li>日付は2026-06-08または2026/6/8の形式で入力できます。</li>
+          <li>
+            true / falseの列は、ExcelでTRUE /
+            FALSEと表示されることがあります。アップロード時には小文字のtrue /
+            falseまたは1 / 0として扱えます。
+          </li>
+        </ul>
       </ManualSection>
 
       <ManualSection title="CSV項目と公開サイトでの表示">
         <ManualTable
-          rows={csvFields}
           firstHeader="CSV項目"
+          rows={csvFields}
           secondHeader="入力例"
           thirdHeader="公開サイトでの表示・役割"
         />
@@ -381,8 +367,8 @@ export default function ManualPage() {
 
       <ManualSection title="statusの入力値">
         <ManualTable
-          rows={statusRows}
           firstHeader="入力値"
+          rows={statusRows}
           secondHeader="公開サイトでの意味"
           thirdHeader="表示"
         />
@@ -390,45 +376,43 @@ export default function ManualPage() {
 
       <ManualSection title="publish_statusの入力値">
         <ManualTable
-          rows={publishStatusRows}
           firstHeader="入力値"
+          rows={publishStatusRows}
           secondHeader="意味"
           thirdHeader="説明"
         />
       </ManualSection>
 
       <ManualSection title="committee_nameの入力値">
-        <LegalParagraph>
+        <p className="leading-relaxed text-gray-700">
           入力できる委員会名は次のいずれかです。該当しない場合は空欄にできます。
-        </LegalParagraph>
-        <LegalList
-          items={[
-            "総務常任委員会",
-            "文教厚生常任委員会",
-            "産業建設常任委員会",
-            "予算委員会",
-            "決算委員会",
-            "委員会審査なし",
-          ]}
-        />
+        </p>
+        <ul className="list-disc space-y-1 pl-5 leading-relaxed text-gray-700">
+          <li>総務常任委員会</li>
+          <li>文教厚生常任委員会</li>
+          <li>産業建設常任委員会</li>
+          <li>予算委員会</li>
+          <li>決算委員会</li>
+          <li>委員会審査なし</li>
+        </ul>
       </ManualSection>
 
       <ManualSection title="よく編集する列">
         <ManualTable
-          rows={frequentEditRows}
           firstHeader="目的"
+          rows={frequentEditRows}
           secondHeader="編集する列"
           thirdHeader="補足"
         />
       </ManualSection>
 
       <ManualSection title="本文で使える書き方">
-        <LegalParagraph>
+        <p className="leading-relaxed text-gray-700">
           <code>normal_content</code>と<code>hard_content</code>
           はMarkdown形式で書けます。HTMLタグを直接入れる運用は避け、
           Markdownで書くのがおすすめです。
-        </LegalParagraph>
-        <div className="rounded-2xl bg-slate-950 p-4 text-sm text-slate-100">
+        </p>
+        <div className="rounded-lg bg-gray-950 p-4 text-gray-100 text-sm">
           <pre className="overflow-x-auto whitespace-pre-wrap leading-relaxed">
             {`## 何を決める議案？
 
@@ -444,34 +428,30 @@ export default function ManualPage() {
 
       <ManualSection title="CSVでは更新できないもの">
         <ManualTable
-          rows={unavailableRows}
           firstHeader="内容"
+          rows={unavailableRows}
           secondHeader="編集場所"
           thirdHeader="補足"
         />
       </ManualSection>
 
       <ManualSection title="反映されないときの確認">
-        <LegalList
-          items={[
-            "publish_statusがpublishedになっているか確認してください。",
-            "session_slugが正しい会期になっているか確認してください。",
-            "normal_titleが空欄になっていないか確認してください。",
-            "日付がYYYY-MM-DDまたはYYYY/M/Dの形になっているか確認してください。",
-            "is_featuredやis_review_completedがtrue / falseになっているか確認してください。",
-            "Vercelの公開サイトは反映まで少し時間がかかることがあります。必要に応じて再デプロイしてください。",
-          ]}
-        />
+        <ul className="list-disc space-y-1 pl-5 leading-relaxed text-gray-700">
+          <li>publish_statusがpublishedになっているか確認してください。</li>
+          <li>session_slugが正しい会期になっているか確認してください。</li>
+          <li>normal_titleが空欄になっていないか確認してください。</li>
+          <li>
+            日付がYYYY-MM-DDまたはYYYY/M/Dの形になっているか確認してください。
+          </li>
+          <li>
+            is_featuredやis_review_completedがtrue /
+            falseになっているか確認してください。
+          </li>
+          <li>
+            Vercelの公開サイトは反映まで少し時間がかかることがあります。必要に応じて再デプロイしてください。
+          </li>
+        </ul>
       </ManualSection>
-
-      <section className="space-y-3 rounded-2xl bg-emerald-50 p-5 text-emerald-950">
-        <LegalSubSectionTitle>運用メモ</LegalSubSectionTitle>
-        <LegalParagraph className="text-emerald-950">
-          このページは、みらい議会＠草津市の更新作業を行う人向けの資料です。
-          他の議員・会派メンバーに作業を引き継ぐ場合は、まずこのページを見てもらうと、
-          CSVのどの列を触ればよいか確認しやすくなります。
-        </LegalParagraph>
-      </section>
-    </LegalPageLayout>
+    </div>
   );
 }

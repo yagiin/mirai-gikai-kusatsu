@@ -64,6 +64,10 @@ export function useInterviewRetry() {
     lastFailedRequestParams.current = null;
   };
 
+  const showError = (message: string) => {
+    setDisplayError(new Error(message));
+  };
+
   /**
    * 手動リトライの実行
    * 保存されているリクエストパラメータを使って再送信
@@ -90,6 +94,7 @@ export function useInterviewRetry() {
     saveRequestParams,
     handleError,
     resetRetry,
+    showError,
     manualRetry,
   };
 }

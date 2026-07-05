@@ -38,7 +38,7 @@ export async function BillInterviewOpinionsSection({
       {/* セクションヘッダー */}
       <div className="flex items-center gap-4">
         <h2 className="text-[22px] font-bold leading-[1.636]">
-          <span className="mr-1">💬</span>法案に寄せられた意見
+          <span className="mr-1">💬</span>議案に寄せられた意見
         </h2>
         <span className="text-[22px] font-bold leading-[1.636]">
           {totalCount}件

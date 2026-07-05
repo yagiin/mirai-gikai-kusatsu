@@ -9,7 +9,7 @@ interface OpinionsBreadcrumbProps {
 export function OpinionsBreadcrumb({ billId }: OpinionsBreadcrumbProps) {
   const items: BreadcrumbItem[] = [
     { label: "TOP", href: routes.home() },
-    { label: "法案詳細", href: getBillDetailLink(billId) },
+    { label: "議案詳細", href: getBillDetailLink(billId) },
     { label: "当事者の意見" },
   ];
 

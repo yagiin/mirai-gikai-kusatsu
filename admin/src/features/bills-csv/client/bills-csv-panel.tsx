@@ -151,9 +151,7 @@ export function BillsCsvPanel({ sessions }: BillsCsvPanelProps) {
             session_slugには会期管理で設定した値（例:
             r8-6-teireikai）を入力します。
           </p>
-          <p>
-            submitted_dateは2026-06-08または2026/6/8の形式で入力できます。
-          </p>
+          <p>submitted_dateは2026-06-08または2026/6/8の形式で入力できます。</p>
           <p>
             committee_nameには所管委員会名を入力します。未設定の場合は空欄にしてください。
           </p>

@@ -95,9 +95,7 @@ export function GeneralQuestionsCsvPanel() {
             session_slugには会期管理で設定した値（例:
             r8-6-teireikai）を入力します。
           </p>
-          <p>
-            question_dateは2026-06-19または2026/6/19の形式で入力できます。
-          </p>
+          <p>question_dateは2026-06-19または2026/6/19の形式で入力できます。</p>
           <p>is_publishedはtrue/false、TRUE/FALSE、1/0を入力できます。</p>
           <p>display_orderは整数で入力します。空欄の場合は0になります。</p>
           <p>

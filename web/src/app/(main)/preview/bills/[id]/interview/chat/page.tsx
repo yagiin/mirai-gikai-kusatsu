@@ -2,11 +2,13 @@ import { AlertTriangle } from "lucide-react";
 import { notFound } from "next/navigation";
 
 export const dynamic = "force-dynamic";
+
 import { getBillByIdAdmin } from "@/features/bills/server/loaders/get-bill-by-id-admin";
 import { validatePreviewToken } from "@/features/bills/server/loaders/validate-preview-token";
 import { getInterviewConfigAdmin } from "@/features/interview-config/server/loaders/get-interview-config-admin";
 import { getInterviewQuestions } from "@/features/interview-config/server/loaders/get-interview-questions";
 import { InterviewChatClient } from "@/features/interview-session/client/components/interview-chat-client";
+import { InterviewSessionAuthRetry } from "@/features/interview-session/client/components/interview-session-auth-retry";
 import { InterviewSessionErrorView } from "@/features/interview-session/client/components/interview-session-error-view";
 import { initializeInterviewChat } from "@/features/interview-session/server/loaders/initialize-interview-chat";
 import { env } from "@/lib/env";
@@ -42,6 +44,12 @@ function PreviewBanner() {
         </div>
       </div>
     </div>
+  );
+}
+
+function isAuthInitializationError(error: unknown): boolean {
+  return (
+    error instanceof Error && error.message.startsWith("Failed to get user:")
   );
 }
 
@@ -99,6 +107,15 @@ export default async function InterviewPreviewChatPage({
     );
   } catch (error) {
     console.error("Failed to initialize interview session (preview):", error);
+    if (isAuthInitializationError(error)) {
+      return (
+        <>
+          <PreviewBanner />
+          <InterviewSessionAuthRetry billId={billId} previewToken={token} />
+        </>
+      );
+    }
+
     return (
       <>
         <PreviewBanner />

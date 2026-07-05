@@ -6,6 +6,7 @@ import { getBillById } from "@/features/bills/server/loaders/get-bill-by-id";
 import { getInterviewConfig } from "@/features/interview-config/server/loaders/get-interview-config";
 import { getInterviewQuestions } from "@/features/interview-config/server/loaders/get-interview-questions";
 import { InterviewChatClient } from "@/features/interview-session/client/components/interview-chat-client";
+import { InterviewSessionAuthRetry } from "@/features/interview-session/client/components/interview-session-auth-retry";
 import { InterviewSessionErrorView } from "@/features/interview-session/client/components/interview-session-error-view";
 import { initializeInterviewChat } from "@/features/interview-session/server/loaders/initialize-interview-chat";
 
@@ -13,6 +14,12 @@ interface InterviewChatPageProps {
   params: Promise<{
     id: string;
   }>;
+}
+
+function isAuthInitializationError(error: unknown): boolean {
+  return (
+    error instanceof Error && error.message.startsWith("Failed to get user:")
+  );
 }
 
 export default async function InterviewChatPage({
@@ -58,6 +65,10 @@ export default async function InterviewChatPage({
     );
   } catch (error) {
     console.error("Failed to initialize interview session:", error);
+    if (isAuthInitializationError(error)) {
+      return <InterviewSessionAuthRetry billId={billId} />;
+    }
+
     return <InterviewSessionErrorView billId={billId} />;
   }
 }

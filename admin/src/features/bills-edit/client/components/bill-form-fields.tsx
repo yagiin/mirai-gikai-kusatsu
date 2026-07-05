@@ -26,10 +26,7 @@ import {
   type OriginatingHouse,
 } from "@/features/bills/shared/types";
 import type { DietSession } from "@/features/diet-sessions/shared/types";
-import {
-  BILL_COMMITTEE_NAMES,
-  type BillCreateInput,
-} from "../../shared/types";
+import { BILL_COMMITTEE_NAMES, type BillCreateInput } from "../../shared/types";
 import { shouldAutoCloseInterviewOnBillStatus } from "../../shared/utils/should-auto-close-interview";
 import { ThumbnailUpload } from "./thumbnail-upload";
 
@@ -372,7 +369,6 @@ export function BillFormFields({
           </FormItem>
         )}
       />
-
     </>
   );
 }

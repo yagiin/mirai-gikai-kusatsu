@@ -51,9 +51,7 @@ function parseBoolean(value: string | undefined, column: string, row: number) {
   const normalized = value?.trim().toLowerCase();
   if (normalized === "true" || normalized === "1") return true;
   if (normalized === "false" || normalized === "0") return false;
-  throw new Error(
-    `${row}行目: ${column}はtrue/falseまたは1/0にしてください`
-  );
+  throw new Error(`${row}行目: ${column}はtrue/falseまたは1/0にしてください`);
 }
 
 function normalizeDate(value: string | null, column: string, row: number) {
@@ -95,9 +93,7 @@ function parseDisplayOrder(value: string | undefined, row: number) {
   return order;
 }
 
-export function parseGeneralQuestionCsv(
-  csv: string
-): GeneralQuestionCsvRow[] {
+export function parseGeneralQuestionCsv(csv: string): GeneralQuestionCsvRow[] {
   const records = parse(csv, {
     bom: true,
     columns: true,
@@ -123,11 +119,7 @@ export function parseGeneralQuestionCsv(
     return {
       id,
       sessionSlug: required(record.session_slug, "session_slug", row),
-      questionerName: required(
-        record.questioner_name,
-        "questioner_name",
-        row
-      ),
+      questionerName: required(record.questioner_name, "questioner_name", row),
       questionerGroup: nullable(record.questioner_group),
       questionDate: normalizeDate(
         nullable(record.question_date),

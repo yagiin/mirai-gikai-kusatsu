@@ -47,25 +47,6 @@ const FEATURES: {
   },
 ];
 
-function _InterviewLPHeader({ bill }: { bill: BillWithContent }) {
-  return (
-    <div className="relative w-full h-50 md:h-80">
-      {bill.thumbnail_url ? (
-        <Image
-          src={bill.thumbnail_url}
-          alt={bill.bill_content?.title ?? bill.name}
-          fill
-          className="object-cover"
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          priority
-        />
-      ) : (
-        <div className="w-full h-full bg-gray-100" />
-      )}
-    </div>
-  );
-}
-
 function _InterviewLPHero({
   bill,
   billId,
@@ -312,8 +293,7 @@ export function InterviewLPPage({
   userReports,
 }: InterviewLPPageProps) {
   return (
-    <div className="flex flex-col gap-8 pb-8 bg-mirai-light-gradient">
-      <_InterviewLPHeader bill={bill} />
+    <div className="flex flex-col gap-8 py-8 bg-mirai-light-gradient">
       <div className="flex flex-col items-center gap-8 px-4">
         <_InterviewLPHero
           bill={bill}

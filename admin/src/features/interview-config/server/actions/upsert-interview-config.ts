@@ -126,8 +126,8 @@ export async function updateInterviewConfig(
 /**
  * インタビュー設定を複製する（質問も含めてコピー）
  *
- * `options.targetBillId` を渡すと別の法案にコピーする。
- * 省略時は同じ法案内で複製する（従来動作）。
+ * `options.targetBillId` を渡すと別の議案にコピーする。
+ * 省略時は同じ議案内で複製する（従来動作）。
  * いずれの場合も新しい設定は status="closed" で作成する。
  */
 export async function duplicateInterviewConfig(

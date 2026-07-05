@@ -17,7 +17,7 @@ export const configGenerationStageSchema = z.enum([
 export type ConfigGenerationStage = z.infer<typeof configGenerationStageSchema>;
 
 /**
- * 初期テンプレート用: 法案ごとに Q1 / Q2 の quick_replies のみ LLM 生成する。
+ * 初期テンプレート用: 議案ごとに Q1 / Q2 の quick_replies のみ LLM 生成する。
  * 質問文・フォローアップ指針は固定のためここでは出力しない。
  *
  * フィールド名は意味ベース（topics/stance）にして LLM の混同を防ぐ。
@@ -27,12 +27,12 @@ export const defaultQuestionsGenerationSchema = z.object({
   topics: z
     .array(z.string())
     .describe(
-      "関心のあるテーマ（論点）の選択肢。法案固有の論点名を5件（例: 『AI利用』『罰則』『データ保護』のような論点）。立場・属性は絶対に入れない。"
+      "関心のあるテーマ（論点）の選択肢。議案固有の論点名を5件（例: 『利用対象』『費用負担』『施設運用』のような論点）。立場・属性は絶対に入れない。"
     ),
   stance: z
     .array(z.string())
     .describe(
-      "立場・関わり方の選択肢。法案の影響を受けそうな立場・属性を5件（例: 『仕事で〜』『〜の利用者』『〜の保護者』のような人の属性）。論点・テーマは絶対に入れない。汎用枠として『一般市民として関心がある』を必ず含めること。"
+      "立場・関わり方の選択肢。議案の影響を受けそうな立場・属性を5件（例: 『利用者』『保護者』『地域住民』のような人の属性）。論点・テーマは絶対に入れない。汎用枠として『一般市民として関心がある』を必ず含めること。"
     ),
 });
 

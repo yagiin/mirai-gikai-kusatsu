@@ -224,7 +224,7 @@ export function useConfigGenerationChat({
         id: "greeting",
         role: "assistant",
         content:
-          "インタビュー設定アシスタントです。法案内容を分析して、デフォルトの質問セットを準備します。",
+          "インタビュー設定アシスタントです。議案内容を分析して、デフォルトの質問セットを準備します。",
       },
     ]);
     submit({

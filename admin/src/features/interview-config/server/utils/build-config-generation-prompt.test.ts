@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { buildConfigGenerationPrompt } from "./build-config-generation-prompt";
 
 const baseParams = {
-  billName: "テスト法案",
+  billName: "テスト議案",
   billTitle: "テストタイトル",
   billSummary: "テスト要約",
   billContent: "テスト内容の詳細",
@@ -16,10 +16,10 @@ describe("buildConfigGenerationPrompt", () => {
       expect(result).toContain("市民インタビューの設計を支援する専門家です");
     });
 
-    it("法案情報セクションを含む", () => {
+    it("議案情報セクションを含む", () => {
       const result = buildConfigGenerationPrompt(baseParams);
-      expect(result).toContain("## 法案情報");
-      expect(result).toContain("法案名: テスト法案");
+      expect(result).toContain("## 議案情報");
+      expect(result).toContain("議案名: テスト議案");
       expect(result).toContain("タイトル: テストタイトル");
       expect(result).toContain("要約: テスト要約");
       expect(result).toContain("テスト内容の詳細");

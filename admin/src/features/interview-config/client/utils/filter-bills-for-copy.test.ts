@@ -2,9 +2,9 @@ import { describe, expect, it } from "vitest";
 import { filterBillsForCopy } from "./filter-bills-for-copy";
 
 const bills = [
-  { id: "a", name: "デジタル社会形成基本法案" },
-  { id: "b", name: "労働基準法改正案" },
-  { id: "c", name: "ALPS処理水関連法案" },
+  { id: "a", name: "議第1号 デジタル化推進事業" },
+  { id: "b", name: "議第2号 児童育成クラブ運営改善" },
+  { id: "c", name: "議第3号 公共施設整備事業" },
   { id: "d", name: "Energy Policy Act" },
 ];
 
@@ -20,7 +20,7 @@ describe("filterBillsForCopy", () => {
   });
 
   it("前後の空白は無視される", () => {
-    const result = filterBillsForCopy(bills, "x", "  労働  ");
+    const result = filterBillsForCopy(bills, "x", "  児童  ");
     expect(result.map((b) => b.id)).toEqual(["b"]);
   });
 
@@ -30,7 +30,7 @@ describe("filterBillsForCopy", () => {
   });
 
   it("クエリが対象 bill の name に含まれる場合のみ一致する", () => {
-    const result = filterBillsForCopy(bills, "x", "ALPS");
+    const result = filterBillsForCopy(bills, "x", "公共施設");
     expect(result.map((b) => b.id)).toEqual(["c"]);
   });
 

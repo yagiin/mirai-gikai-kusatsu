@@ -112,7 +112,7 @@ export function ConfigGenerationChat({
           AIで設定を生成
         </CardTitle>
         <p className="text-sm text-muted-foreground">
-          法案内容に合わせて質問とテーマを提案します
+          議案内容に合わせて質問とテーマを提案します
         </p>
         {/* ステージステッパー（クリックで切替可能） */}
         <div className="flex items-center gap-1 pt-2">

@@ -123,7 +123,7 @@ export function InterviewQuestionForm({
           id={targetAudienceId}
           value={targetAudience}
           onChange={(e) => setTargetAudience(e.target.value)}
-          placeholder="例: 当該法案分野の専門家、業界従事者"
+          placeholder="例: 当該議案に関係する市民、事業者、団体関係者"
           className="min-h-[60px] resize-y"
           maxLength={500}
         />

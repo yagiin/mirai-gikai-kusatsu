@@ -256,7 +256,7 @@ export function InterviewConfigForm({
                       </SelectContent>
                     </Select>
                     <FormDescription>
-                      インタビュー機能の有効/無効を設定します。公開設定は法案ごとに1つのみ可能です。
+                      インタビュー機能の有効/無効を設定します。公開設定は議案ごとに1つのみ可能です。
                     </FormDescription>
                     <FormMessage />
                   </FormItem>

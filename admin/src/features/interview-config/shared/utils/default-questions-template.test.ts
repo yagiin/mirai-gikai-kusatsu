@@ -40,9 +40,9 @@ describe("DEFAULT_QUESTIONS_TEMPLATE", () => {
   it("Q6 は運用ハードルを問う質問で、5往復まで許容する独自ルールを持つ", () => {
     const q6 = DEFAULT_QUESTIONS_TEMPLATE[5];
     expect(q6.kind).toBe("fixed");
-    expect(q6.question).toContain("法案");
+    expect(q6.question).toContain("議案");
     expect(q6.question).toContain("ハードル");
-    expect(q6.question).toContain("個人・事業者・組織");
+    expect(q6.question).toContain("市民・事業者・地域・団体");
     expect(q6.follow_up_guide).toContain("最大5往復");
     if (q6.kind === "fixed") {
       expect(q6.quick_replies).toEqual([
@@ -156,10 +156,10 @@ describe("buildQuestionsFromTemplate", () => {
     });
     // 固定質問文
     expect(result[0].question).toBe(
-      "今回の法改正のうち、あなたが特に関係がある、または意見を伝えたいテーマを選んでください。"
+      "今回の議案のうち、あなたが特に関係がある、または意見を伝えたいテーマを選んでください。"
     );
     expect(result[1].question).toBe(
-      "この法案について、あなたはどんな立場・関わり方に近いですか？"
+      "この議案について、あなたはどんな立場・関わり方に近いですか？"
     );
     // 固定フォローアップ指針の特徴文言
     expect(result[0].follow_up_guide).toContain("Q2に進む");

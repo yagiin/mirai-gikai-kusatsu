@@ -5,9 +5,9 @@ import { getActiveDietSession } from "@/features/diet-sessions/server/loaders/ge
 import { CACHE_TAGS } from "@/lib/cache-tags";
 import type { BillWithContent } from "../../shared/types";
 import {
+  findBillIdsWithPublicInterview,
   findFeaturedBillsWithContents,
   findTagsByBillIds,
-  findBillIdsWithPublicInterview,
 } from "../repositories/bill-repository";
 
 /**
@@ -20,7 +20,19 @@ export async function getFeaturedBills(): Promise<BillWithContent[]> {
   const difficultyLevel = await getDifficultyLevel();
   const activeSession = await getActiveDietSession();
 
-  return _getCachedFeaturedBills(difficultyLevel, activeSession?.id ?? null);
+  const bills = await _getCachedFeaturedBills(
+    difficultyLevel,
+    activeSession?.id ?? null
+  );
+
+  const interviewBillIds = await findBillIdsWithPublicInterview(
+    bills.map((bill) => bill.id)
+  );
+
+  return bills.map((bill) => ({
+    ...bill,
+    hasPublicInterview: interviewBillIds.has(bill.id),
+  }));
 }
 
 const _getCachedFeaturedBills = unstable_cache(

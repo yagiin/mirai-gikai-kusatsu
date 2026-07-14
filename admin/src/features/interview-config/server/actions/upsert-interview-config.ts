@@ -61,7 +61,10 @@ export async function createInterviewConfig(
     });
 
     // web側のキャッシュを無効化
-    await invalidateWebCache([WEB_CACHE_TAGS.INTERVIEW_CONFIGS]);
+    await invalidateWebCache([
+      WEB_CACHE_TAGS.INTERVIEW_CONFIGS,
+      WEB_CACHE_TAGS.BILLS,
+    ]);
 
     return { success: true, data: { id: data.id } };
   } catch (error) {
@@ -108,7 +111,10 @@ export async function updateInterviewConfig(
     });
 
     // web側のキャッシュを無効化
-    await invalidateWebCache([WEB_CACHE_TAGS.INTERVIEW_CONFIGS]);
+    await invalidateWebCache([
+      WEB_CACHE_TAGS.INTERVIEW_CONFIGS,
+      WEB_CACHE_TAGS.BILLS,
+    ]);
 
     return { success: true, data: { id: data.id } };
   } catch (error) {
@@ -191,7 +197,10 @@ export async function duplicateInterviewConfig(
     }
 
     // web側のキャッシュを無効化
-    await invalidateWebCache([WEB_CACHE_TAGS.INTERVIEW_CONFIGS]);
+    await invalidateWebCache([
+      WEB_CACHE_TAGS.INTERVIEW_CONFIGS,
+      WEB_CACHE_TAGS.BILLS,
+    ]);
 
     return { success: true, data: { id: newConfig.id, billId: targetBillId } };
   } catch (error) {
@@ -218,7 +227,10 @@ export async function deleteInterviewConfig(
     await deleteInterviewConfigRecord(configId);
 
     // web側のキャッシュを無効化
-    await invalidateWebCache([WEB_CACHE_TAGS.INTERVIEW_CONFIGS]);
+    await invalidateWebCache([
+      WEB_CACHE_TAGS.INTERVIEW_CONFIGS,
+      WEB_CACHE_TAGS.BILLS,
+    ]);
 
     return { success: true, data: { id: configId } };
   } catch (error) {

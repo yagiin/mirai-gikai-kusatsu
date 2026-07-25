@@ -6,6 +6,8 @@ import { Container } from "@/components/layouts/container";
 import { getBillsByDietSession } from "@/features/bills/server/loaders/get-bills-by-diet-session";
 import { DietSessionBillList } from "@/features/diet-sessions/client/components/diet-session-bill-list";
 import { getDietSessionBySlug } from "@/features/diet-sessions/server/loaders/get-diet-session-by-slug";
+import { SessionVotingResults } from "@/features/voting-results/server/components/session-voting-results";
+import { getVotingResultsBySessionSlug } from "@/features/voting-results/shared/voting-results";
 import { routes } from "@/lib/routes";
 
 type Props = {
@@ -35,6 +37,7 @@ export default async function DietSessionBillsPage({ params }: Props) {
   }
 
   const bills = await getBillsByDietSession(session.id);
+  const votingResults = getVotingResultsBySessionSlug(slug);
 
   return (
     <div className="bg-mirai-surface-muted">
@@ -53,8 +56,9 @@ export default async function DietSessionBillsPage({ params }: Props) {
         <div className="absolute inset-0 bg-gradient-to-b from-emerald-50/20 to-emerald-100/55" />
       </div>
 
-      <Container className="py-8">
+      <Container className="flex flex-col gap-16 py-8">
         <DietSessionBillList session={session} bills={bills} />
+        {votingResults && <SessionVotingResults data={votingResults} />}
       </Container>
 
       {/* パンくずリスト */}

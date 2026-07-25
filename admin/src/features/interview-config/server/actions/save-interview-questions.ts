@@ -35,7 +35,10 @@ export async function saveInterviewQuestions(
 
     // 質問が空の場合はここで終了
     if (validatedQuestions.length === 0) {
-      await invalidateWebCache([WEB_CACHE_TAGS.INTERVIEW_CONFIGS]);
+      await invalidateWebCache([
+        WEB_CACHE_TAGS.INTERVIEW_CONFIGS,
+        WEB_CACHE_TAGS.BILLS,
+      ]);
       return { success: true };
     }
 
@@ -48,7 +51,10 @@ export async function saveInterviewQuestions(
     await createInterviewQuestions(questionsToInsert);
 
     // web側のキャッシュを無効化
-    await invalidateWebCache([WEB_CACHE_TAGS.INTERVIEW_CONFIGS]);
+    await invalidateWebCache([
+      WEB_CACHE_TAGS.INTERVIEW_CONFIGS,
+      WEB_CACHE_TAGS.BILLS,
+    ]);
 
     return { success: true };
   } catch (error) {

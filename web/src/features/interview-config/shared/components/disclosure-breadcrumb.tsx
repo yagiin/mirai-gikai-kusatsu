@@ -16,7 +16,7 @@ export function DisclosureBreadcrumb({
 }: DisclosureBreadcrumbProps) {
   const items = [
     { label: "TOP", href: routes.home() },
-    { label: "法案詳細", href: getBillDetailLink(billId, previewToken) },
+    { label: "議案詳細", href: getBillDetailLink(billId, previewToken) },
     {
       label: "AIインタビュー",
       href: getInterviewLPLink(billId, previewToken),

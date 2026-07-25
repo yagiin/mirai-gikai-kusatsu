@@ -4,15 +4,23 @@ import type { DifficultyLevelEnum } from "@/features/bill-difficulty/shared/type
 import { CACHE_TAGS } from "@/lib/cache-tags";
 import type { BillWithContent } from "../../shared/types";
 import {
+  findBillIdsWithPublicInterview,
   findPublishedBillsWithContents,
   findTagsByBillIds,
-  findBillIdsWithPublicInterview,
 } from "../repositories/bill-repository";
 
 export async function getBills(): Promise<BillWithContent[]> {
   // キャッシュ外でcookiesにアクセス
   const difficultyLevel = await getDifficultyLevel();
-  return _getCachedBills(difficultyLevel);
+  const bills = await _getCachedBills(difficultyLevel);
+  const interviewBillIds = await findBillIdsWithPublicInterview(
+    bills.map((bill) => bill.id)
+  );
+
+  return bills.map((bill) => ({
+    ...bill,
+    hasPublicInterview: interviewBillIds.has(bill.id),
+  }));
 }
 
 const _getCachedBills = unstable_cache(

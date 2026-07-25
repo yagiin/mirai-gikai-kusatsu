@@ -2,12 +2,11 @@ import type { MetadataRoute } from "next";
 import { getBills } from "@/features/bills/server/loaders/get-bills";
 import { getPublishedGeneralQuestions } from "@/features/general-questions/server/loaders/get-published-general-questions";
 import { getPublishedGlossaryTerms } from "@/features/glossary/server/loaders/get-published-glossary-terms";
+import { env } from "@/lib/env";
 import { routes } from "@/lib/routes";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = process.env.VERCEL_URL
-    ? `https://${process.env.VERCEL_URL}`
-    : "http://localhost:3000";
+  const baseUrl = env.webUrl.replace(/\/$/, "");
 
   const [bills, glossaryTerms, generalQuestions] = await Promise.all([
     getBills(),

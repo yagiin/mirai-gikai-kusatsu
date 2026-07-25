@@ -6,10 +6,10 @@ import type { DietSession } from "@/features/diet-sessions/shared/types";
 import { CACHE_TAGS } from "@/lib/cache-tags";
 import type { BillWithContent } from "../../shared/types";
 import {
+  countPublishedBillsByDietSession,
+  findBillIdsWithPublicInterview,
   findPreviousSessionBills,
   findTagsByBillIds,
-  findBillIdsWithPublicInterview,
-  countPublishedBillsByDietSession,
 } from "../repositories/bill-repository";
 
 const MAX_PREVIEW_BILLS = 5;
@@ -35,10 +35,16 @@ export async function getPreviousSessionBills(): Promise<PreviousSessionBillsRes
     _getCachedPreviousSessionBills(previousSession.id, difficultyLevel),
     _getCachedPreviousSessionBillCount(previousSession.id, difficultyLevel),
   ]);
+  const interviewBillIds = await findBillIdsWithPublicInterview(
+    bills.map((bill) => bill.id)
+  );
 
   return {
     session: previousSession,
-    bills,
+    bills: bills.map((bill) => ({
+      ...bill,
+      hasPublicInterview: interviewBillIds.has(bill.id),
+    })),
     totalBillCount,
   };
 }

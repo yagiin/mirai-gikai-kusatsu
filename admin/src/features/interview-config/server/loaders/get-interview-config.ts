@@ -6,7 +6,7 @@ import {
 } from "../repositories/interview-config-repository";
 
 /**
- * 法案IDからすべてのインタビュー設定を取得する
+ * 議案IDからすべてのインタビュー設定を取得する
  */
 export async function getInterviewConfigs(
   billId: string

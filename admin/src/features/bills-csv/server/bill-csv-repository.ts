@@ -2,16 +2,22 @@ import "server-only";
 
 import { createAdminClient } from "@mirai-gikai/supabase";
 
-export async function findBillsForCsv() {
+export async function findBillsForCsv(sessionSlug?: string | null) {
   const supabase = createAdminClient();
+  const billsQuery = supabase
+    .from("bills")
+    .select("*, diet_sessions!inner(slug)")
+    .order("submitted_date", { ascending: true });
+
+  if (sessionSlug) {
+    billsQuery.eq("diet_sessions.slug", sessionSlug);
+  }
+
   const [
     { data: bills, error: billsError },
     { data: contents, error: contentsError },
   ] = await Promise.all([
-    supabase
-      .from("bills")
-      .select("*, diet_sessions(slug)")
-      .order("submitted_date", { ascending: true }),
+    billsQuery,
     supabase.from("bill_contents").select("*"),
   ]);
 

@@ -1,6 +1,7 @@
 import { BillList } from "@/features/bills/server/components/bill-list/bill-list";
 import { parseBillSortParams } from "@/features/bills/shared/utils/parse-bill-sort-params";
 import { BillsCsvPanel } from "@/features/bills-csv/client/bills-csv-panel";
+import { loadDietSessions } from "@/features/diet-sessions/server/loaders/load-diet-sessions";
 
 interface BillsPageProps {
   searchParams: Promise<{
@@ -12,6 +13,7 @@ interface BillsPageProps {
 export default async function BillsPage({ searchParams }: BillsPageProps) {
   const { sort, order } = await searchParams;
   const sortConfig = parseBillSortParams(sort, order);
+  const sessions = await loadDietSessions();
 
   return (
     <div>
@@ -20,7 +22,7 @@ export default async function BillsPage({ searchParams }: BillsPageProps) {
         <p className="text-gray-600 mt-1">議案の一覧を確認・管理できます</p>
       </div>
 
-      <BillsCsvPanel />
+      <BillsCsvPanel sessions={sessions} />
       <BillList sortConfig={sortConfig} />
     </div>
   );

@@ -1,7 +1,7 @@
 import type { InterviewQuestionInput } from "../types";
 
 /**
- * クイックリプライのみを LLM で法案別に生成するスロット。
+ * クイックリプライのみを LLM で議案別に生成するスロット。
  * 質問文・フォローアップ指針は固定文言を使う。
  *
  * - topics: 関心のあるテーマ（論点）選択肢（Q1 で使う）
@@ -28,7 +28,7 @@ export type FixedQuestionTemplate = {
 };
 
 /**
- * クイックリプライのみ法案ごとに LLM 生成するタイプ。
+ * クイックリプライのみ議案ごとに LLM 生成するタイプ。
  * 質問文とフォローアップ指針は固定文言。
  */
 export type QuickRepliesSlotTemplate = {
@@ -59,7 +59,7 @@ export const DEFAULT_QUESTIONS_TEMPLATE: readonly DefaultQuestionTemplateEntry[]
       kind: "quick_replies_slot",
       slot: "topics",
       question:
-        "今回の法改正のうち、あなたが特に関係がある、または意見を伝えたいテーマを選んでください。",
+        "今回の議案のうち、あなたが特に関係がある、または意見を伝えたいテーマを選んでください。",
       follow_up_guide:
         "回答で選ばれたテーマを以降の深掘りの前提にしてください。この質問で「その他」以外のクイックリプライの選択肢が選ばれた場合、または「その他（自由記述）」が選ばれ、その内容について記述をもらった場合は、速やかにQ2に進む。「その他」が選ばれた場合は、記事だけでなくナレッジソースの資料も参考にしながら、何の話をしているのか特定する。「その他」が選ばれた場合は、選択肢を限定せず、「ありがとうございます。「その他（自由記述）」とのことですが、どのような点について関心がありますか？」と尋ねる。キーワードを受け取ったら速やかに次の質問にいく。",
       sample_quick_replies: [
@@ -74,7 +74,7 @@ export const DEFAULT_QUESTIONS_TEMPLATE: readonly DefaultQuestionTemplateEntry[]
     {
       kind: "quick_replies_slot",
       slot: "stance",
-      question: "この法案について、あなたはどんな立場・関わり方に近いですか？",
+      question: "この議案について、あなたはどんな立場・関わり方に近いですか？",
       follow_up_guide:
         "回答内容から専門知識レベルを判断し、以降の質問の深さや用語の使い方を調整してください。この質問で「その他」以外のクイックリプライの選択肢が選ばれた場合、または「その他（自由記述）」が選ばれ、その内容について記述をもらった場合は、速やかにQ3に進む。",
       sample_quick_replies: [
@@ -88,7 +88,7 @@ export const DEFAULT_QUESTIONS_TEMPLATE: readonly DefaultQuestionTemplateEntry[]
     },
     {
       kind: "fixed",
-      question: "今回の法案について、現時点でどの程度ご存知ですか。",
+      question: "今回の議案について、現時点でどの程度ご存知ですか。",
       follow_up_guide:
         "回答内容から専門知識レベルを判断し、以降の質問の深さや用語の使い方を調整する。この質問自体での深掘りは行わない。理解度が高くない場合のみ、以降の質問で制度名を出す前に短い要約を1文だけ挟む。回答を受け止めたらQ4に進む。",
       quick_replies: [
@@ -100,7 +100,7 @@ export const DEFAULT_QUESTIONS_TEMPLATE: readonly DefaultQuestionTemplateEntry[]
     },
     {
       kind: "fixed",
-      question: "今回の法案について、全体としてどのように評価していますか。",
+      question: "今回の議案について、全体としてどのように評価していますか。",
       follow_up_guide: `評価の理由を1〜2点だけ短く聞く。賛否が割れる論点があれば、どの論点が評価を左右したかを1回確認する。回答を受け止めたらQ5（Q1で選んだテーマの深掘り）に進む。\n${FOLLOW_UP_DEPTH_LIMIT_RULE}`,
       quick_replies: [
         "良いと思う",
@@ -120,7 +120,7 @@ export const DEFAULT_QUESTIONS_TEMPLATE: readonly DefaultQuestionTemplateEntry[]
     {
       kind: "fixed",
       question:
-        "この法案を実際に運用するうえでハードルがあると思いますか？また、影響を受ける側（個人・事業者・組織など）のさまざまなケースが十分に考慮されていると思いますか？",
+        "この議案を実際に進めるうえでハードルがあると思いますか？また、影響を受ける側（市民・事業者・地域・団体など）のさまざまなケースが十分に考慮されていると思いますか？",
       follow_up_guide:
         "「いいえ」の場合は、見落とされそうな具体例（例: 属性や立場の違い（個人・事業者・組織など）、規模や条件の違い（小規模／大規模、地域差、就労形態など）、既存の仕組みとの関係、対象から漏れそうなケースなど）を引き出す。「わからない」の場合は、無理せず次の質問に進む。具体的なキーワードを含む回答を得られた場合は深掘りをやめて次の質問に行く。なるべく一度の質問で回答者から具体的な回答を得るようにこころがけ、長々と質問を続けない。回答者とのやりとりは最大5往復までにとどめる。深掘りが一段落したらQ7に進む。",
       quick_replies: [

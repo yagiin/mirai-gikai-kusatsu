@@ -61,7 +61,10 @@ export async function createInterviewConfig(
     });
 
     // web側のキャッシュを無効化
-    await invalidateWebCache([WEB_CACHE_TAGS.INTERVIEW_CONFIGS]);
+    await invalidateWebCache([
+      WEB_CACHE_TAGS.INTERVIEW_CONFIGS,
+      WEB_CACHE_TAGS.BILLS,
+    ]);
 
     return { success: true, data: { id: data.id } };
   } catch (error) {
@@ -108,7 +111,10 @@ export async function updateInterviewConfig(
     });
 
     // web側のキャッシュを無効化
-    await invalidateWebCache([WEB_CACHE_TAGS.INTERVIEW_CONFIGS]);
+    await invalidateWebCache([
+      WEB_CACHE_TAGS.INTERVIEW_CONFIGS,
+      WEB_CACHE_TAGS.BILLS,
+    ]);
 
     return { success: true, data: { id: data.id } };
   } catch (error) {
@@ -126,8 +132,8 @@ export async function updateInterviewConfig(
 /**
  * インタビュー設定を複製する（質問も含めてコピー）
  *
- * `options.targetBillId` を渡すと別の法案にコピーする。
- * 省略時は同じ法案内で複製する（従来動作）。
+ * `options.targetBillId` を渡すと別の議案にコピーする。
+ * 省略時は同じ議案内で複製する（従来動作）。
  * いずれの場合も新しい設定は status="closed" で作成する。
  */
 export async function duplicateInterviewConfig(
@@ -191,7 +197,10 @@ export async function duplicateInterviewConfig(
     }
 
     // web側のキャッシュを無効化
-    await invalidateWebCache([WEB_CACHE_TAGS.INTERVIEW_CONFIGS]);
+    await invalidateWebCache([
+      WEB_CACHE_TAGS.INTERVIEW_CONFIGS,
+      WEB_CACHE_TAGS.BILLS,
+    ]);
 
     return { success: true, data: { id: newConfig.id, billId: targetBillId } };
   } catch (error) {
@@ -218,7 +227,10 @@ export async function deleteInterviewConfig(
     await deleteInterviewConfigRecord(configId);
 
     // web側のキャッシュを無効化
-    await invalidateWebCache([WEB_CACHE_TAGS.INTERVIEW_CONFIGS]);
+    await invalidateWebCache([
+      WEB_CACHE_TAGS.INTERVIEW_CONFIGS,
+      WEB_CACHE_TAGS.BILLS,
+    ]);
 
     return { success: true, data: { id: configId } };
   } catch (error) {

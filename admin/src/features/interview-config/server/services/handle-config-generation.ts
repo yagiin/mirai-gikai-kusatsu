@@ -64,9 +64,9 @@ export async function handleConfigGeneration({
 
   const initialUserMessage =
     stage === "default_questions"
-      ? "法案内容を分析して、topics（Q1の論点選択肢）とstance（Q2の立場選択肢）を生成してください。"
+      ? "議案内容を分析して、topics（Q1の論点選択肢）とstance（Q2の立場選択肢）を生成してください。"
       : stage === "theme_proposal"
-        ? "確定した質問と法案内容をもとに、テーマを提案してください。"
+        ? "確定した質問と議案内容をもとに、テーマを提案してください。"
         : "質問を提案・ブラッシュアップしてください。";
 
   const effectiveMessages =

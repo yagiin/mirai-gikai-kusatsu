@@ -79,6 +79,14 @@ export function useInterviewChat({
           next_stage,
         } = finishedObject;
         const topicTitle = topic_title ?? null;
+        const responseText = text ?? "";
+
+        if (looksLikeHtmlErrorPage(responseText)) {
+          retry.showError(
+            "AIインタビューの処理中にサーバーエラーが発生しました。少し時間をおいて、もう一度お試しください。"
+          );
+          return;
+        }
 
         // 既出の questionId を検出して無効化（深掘り時に前の質問IDが残る問題を防止）
         const validated = validateQuestionId({
@@ -101,7 +109,7 @@ export function useInterviewChat({
         const newAssistantMessage: ConversationMessage = {
           id: `assistant-${Date.now()}`,
           role: "assistant",
-          content: text ?? "",
+          content: responseText,
           report: shouldIncludeReport ? convertPartialReport(report) : null,
           quickReplies: validated.quickReplies,
           questionId: validated.questionId,
@@ -237,4 +245,14 @@ export function useInterviewChat({
     handleQuickReply,
     handleRetry,
   };
+}
+
+function looksLikeHtmlErrorPage(text: string): boolean {
+  const trimmed = text.trimStart().toLowerCase();
+  return (
+    trimmed.startsWith("<!doctype html") ||
+    trimmed.startsWith("<html") ||
+    trimmed.includes("<title>500: internal server error</title>") ||
+    trimmed.includes("__next_data__")
+  );
 }

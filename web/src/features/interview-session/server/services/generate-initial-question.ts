@@ -18,7 +18,6 @@ import { buildInterviewSystemPrompt } from "../utils/build-interview-system-prom
 
 type GenerateInitialQuestionParams = {
   sessionId: string;
-  billId?: string;
   interviewConfigId: string;
   userId: string;
   deps?: GenerateQuestionDeps;

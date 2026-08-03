@@ -3,6 +3,7 @@ name: Migrate DB then Deploy
 on:
   push:
     branches: [ main, develop ]
+  workflow_dispatch:
 
 jobs:
   migrate-and-deploy:
@@ -29,7 +30,20 @@ jobs:
       - name: Supabase db push
         run: |
           supabase db push --include-all
-          supabase config push
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+
+      # Google OAuthを設定している環境だけAuth設定を反映する。
+      # 未使用環境では空の認証情報で既存設定を上書きしない。
+      - name: Supabase config push
+        run: |
+          if [ -n "$SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID" ] && \
+             [ -n "$SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET" ] && \
+             [ -n "$ADMIN_AUTH_CALLBACK_URL" ]; then
+            supabase config push
+          else
+            echo "Google OAuth secrets are not configured; skipping config push."
+          fi
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
           SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID: ${{ secrets.SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID }}

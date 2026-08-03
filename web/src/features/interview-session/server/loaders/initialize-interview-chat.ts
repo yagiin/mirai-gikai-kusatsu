@@ -59,7 +59,6 @@ export async function initializeInterviewChat(
   if (messages.length === 0) {
     const initialQuestion = await generateInitialQuestion({
       sessionId: session.id,
-      billId,
       interviewConfigId,
       userId: user.id,
       deps: { model: deps?.model },

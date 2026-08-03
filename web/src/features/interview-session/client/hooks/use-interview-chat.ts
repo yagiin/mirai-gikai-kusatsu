@@ -19,11 +19,13 @@ import { useQuickReplies } from "./use-quick-replies";
 
 interface UseInterviewChatProps {
   billId: string;
+  interviewConfigId?: string;
   initialMessages: InitialMessage[];
 }
 
 export function useInterviewChat({
   billId,
+  interviewConfigId,
   initialMessages,
 }: UseInterviewChatProps) {
   // 初期メッセージのパース
@@ -51,6 +53,7 @@ export function useInterviewChat({
   const [pendingSummaryRequest, setPendingSummaryRequest] = useState<{
     messages: { role: string; content: string }[];
     billId: string;
+    interviewConfigId?: string;
     currentStage: InterviewStage;
   } | null>(null);
 
@@ -128,6 +131,7 @@ export function useInterviewChat({
           setPendingSummaryRequest({
             messages: allMessages,
             billId,
+            ...(interviewConfigId ? { interviewConfigId } : {}),
             currentStage: "summary" as InterviewStage,
           });
         }
@@ -181,6 +185,7 @@ export function useInterviewChat({
         userMessageText
       ),
       billId,
+      ...(interviewConfigId ? { interviewConfigId } : {}),
       currentStage,
       nextQuestionId,
     };

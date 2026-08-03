@@ -1,12 +1,11 @@
 import "server-only";
 
 import { generateText, type LanguageModel, Output } from "ai";
-import { getBillByIdAdmin } from "@/features/bills/server/loaders/get-bill-by-id-admin";
 import {
   isWithinDailyCostLimit,
   recordChatUsage,
 } from "@/features/chat/server/services/cost-tracker";
-import { getInterviewConfigAdmin } from "@/features/interview-config/server/loaders/get-interview-config-admin";
+import { getInterviewConfigByIdAdmin } from "@/features/interview-config/server/loaders/get-interview-config-admin";
 import { getInterviewQuestions } from "@/features/interview-config/server/loaders/get-interview-questions";
 import { DEFAULT_INTERVIEW_CHAT_MODEL } from "@/lib/ai/models";
 import { env } from "@/lib/env";
@@ -14,11 +13,12 @@ import { interviewChatTextSchema } from "../../shared/schemas";
 import type { InterviewMessage } from "../../shared/types";
 import { overrideInitialTopicTitle } from "../../shared/utils/override-initial-topic-title";
 import { createInterviewMessage } from "../repositories/interview-session-repository";
+import { getInterviewSubject } from "../loaders/get-interview-subject";
 import { buildInterviewSystemPrompt } from "../utils/build-interview-system-prompt";
 
 type GenerateInitialQuestionParams = {
   sessionId: string;
-  billId: string;
+  billId?: string;
   interviewConfigId: string;
   userId: string;
   deps?: GenerateQuestionDeps;
@@ -34,27 +34,26 @@ export type GenerateQuestionDeps = {
  */
 export async function generateInitialQuestion({
   sessionId,
-  billId,
   interviewConfigId,
   userId,
   deps,
 }: GenerateInitialQuestionParams): Promise<InterviewMessage | null> {
   try {
-    // インタビュー設定と法案情報を取得
-    // どちらもサーバーサイドでの生成処理のため、常にAdmin用（非公開制限なし）を使用する
-    const [interviewConfig, bill, questions] = await Promise.all([
-      getInterviewConfigAdmin(billId),
-      getBillByIdAdmin(billId),
+    const [interviewConfig, questions] = await Promise.all([
+      getInterviewConfigByIdAdmin(interviewConfigId),
       getInterviewQuestions(interviewConfigId),
     ]);
 
     if (!interviewConfig) {
       throw new Error("Interview config not found");
     }
+    const subject = await getInterviewSubject(interviewConfig);
+    if (!subject) throw new Error("Interview subject not found");
 
     // プロンプトを構築（初期質問なので currentStage は chat、askedQuestionIds は空）
     const systemPrompt = buildInterviewSystemPrompt({
-      bill,
+      bill: subject.bill,
+      topic: subject.topic,
       interviewConfig,
       questions,
       currentStage: "chat",
@@ -63,8 +62,10 @@ export async function generateInitialQuestion({
 
     // インタビュー開始の指示を追加（最初の質問にはクイックリプライとquestion_idを含める）
     const firstQuestionId = questions[0]?.id;
-    const billTitle = bill?.bill_content?.title ?? bill?.name ?? "この議案";
-    const enhancedSystemPrompt = `${systemPrompt}\n\n## 重要: これはインタビューの開始です。ユーザーからのメッセージはありません。事前定義質問の最初の質問から始めてください。挨拶は温かく丁寧に（2文程度）、「${billTitle}」についてのインタビューであることを明確に伝えた上で、すぐに最初の質問をしてください。最初の質問にクイックリプライが設定されている場合は、必ず quick_replies フィールドに含めてください。${firstQuestionId ? `最初の質問は ID: ${firstQuestionId} であり、レスポンスの question_id にこの値を含めてください。` : ""}`;
+    const subjectTitle = subject.bill
+      ? (subject.bill.bill_content?.title ?? subject.bill.name)
+      : subject.topic.title;
+    const enhancedSystemPrompt = `${systemPrompt}\n\n## 重要: これはインタビューの開始です。ユーザーからのメッセージはありません。事前定義質問の最初の質問から始めてください。挨拶は温かく丁寧に（2文程度）、「${subjectTitle}」についてのインタビューであることを明確に伝えた上で、すぐに最初の質問をしてください。最初の質問にクイックリプライが設定されている場合は、必ず quick_replies フィールドに含めてください。${firstQuestionId ? `最初の質問は ID: ${firstQuestionId} であり、レスポンスの question_id にこの値を含めてください。` : ""}`;
 
     // 日次コスト制限チェック（fail-closed: エラー時も生成をブロック）
     try {
@@ -94,7 +95,9 @@ export async function generateInitialQuestion({
         functionId: "interview-initial-question",
         metadata: {
           sessionId,
-          billId,
+          subjectType: subject.type,
+          subjectId:
+            interviewConfig.bill_id ?? interviewConfig.interview_topic_id ?? "",
         },
       },
     });
@@ -112,7 +115,8 @@ export async function generateInitialQuestion({
         occurredAt,
         metadata: {
           pageType: "interview",
-          billId,
+          billId: interviewConfig.bill_id ?? undefined,
+          interviewTopicId: interviewConfig.interview_topic_id ?? undefined,
           finishReason: result.finishReason ?? null,
           stepCount: 0,
         },

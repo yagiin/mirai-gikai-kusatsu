@@ -48,6 +48,7 @@ export async function getReportDetailForSimulation(
   ]);
 
   if (!interviewConfig) return null;
+  if (!interviewConfig.bill_id) return null;
 
   const billData = await fetchBillWithContents(interviewConfig.bill_id);
 

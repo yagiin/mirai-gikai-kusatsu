@@ -13,14 +13,25 @@ export function isMainPage(pathname: string): boolean {
 
 /** インタビューチャットページかどうかを判定 */
 export function isInterviewPage(pathname: string): boolean {
-  // /bills/[id]/interview/chat
-  return /\/bills\/[^/]+\/interview\/chat$/.test(pathname);
+  return (
+    /\/bills\/[^/]+\/interview\/chat$/.test(pathname) ||
+    /\/interviews\/[^/]+\/chat$/.test(pathname)
+  );
 }
 
 /** インタビューセクション（LP・チャット含む）かどうかを判定 */
 export function isInterviewSection(pathname: string): boolean {
-  // /bills/[id]/interview 以下すべて
-  return /\/bills\/[^/]+\/interview(\/|$)/.test(pathname);
+  return (
+    /\/bills\/[^/]+\/interview(\/|$)/.test(pathname) ||
+    /\/interviews\/[^/]+(\/|$)/.test(pathname)
+  );
+}
+
+export function extractInterviewTopicSlugFromPath(
+  pathname: string
+): string | null {
+  const match = pathname.match(/\/interviews\/([^/]+)/);
+  return match ? match[1] : null;
 }
 
 /** インタビューページからbillIdを抽出 */

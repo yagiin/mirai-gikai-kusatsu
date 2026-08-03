@@ -29,7 +29,8 @@ export type InterviewQuestion =
 // Request types
 export interface InterviewChatRequestParams {
   messages: Array<{ role: string; content: string }>;
-  billId: string;
+  billId?: string;
+  interviewConfigId?: string;
   currentStage: "chat" | "summary" | "summary_complete";
   isRetry?: boolean;
   nextQuestionId?: string;

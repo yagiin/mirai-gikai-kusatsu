@@ -10,11 +10,13 @@ import { InterviewSessionErrorView } from "./interview-session-error-view";
 interface InterviewSessionAuthRetryProps {
   billId: string;
   previewToken?: string;
+  returnHref?: string;
 }
 
 export function InterviewSessionAuthRetry({
   billId,
   previewToken,
+  returnHref,
 }: InterviewSessionAuthRetryProps) {
   const router = useRouter();
   const { userId, isLoading, error } = useAnonymousSupabaseUserState();
@@ -79,6 +81,7 @@ export function InterviewSessionAuthRetry({
     <InterviewSessionErrorView
       billId={billId}
       previewToken={previewToken}
+      returnHref={returnHref}
       message="インタビューの準備が完了しました。画面を再読み込みしてもう一度お試しください。"
     />
   );

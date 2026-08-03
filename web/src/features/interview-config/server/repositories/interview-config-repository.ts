@@ -33,6 +33,17 @@ export async function findLatestInterviewConfigByBillId(billId: string) {
   return { data, error };
 }
 
+export async function findInterviewConfigById(configId: string) {
+  const supabase = createAdminClient();
+  const { data, error } = await supabase
+    .from("interview_configs")
+    .select("*")
+    .eq("id", configId)
+    .single();
+
+  return { data, error };
+}
+
 /**
  * interview_config_idからインタビュー質問一覧を取得（question_order昇順）
  */

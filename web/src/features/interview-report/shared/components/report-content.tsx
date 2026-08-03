@@ -1,4 +1,9 @@
 import type { ReactNode } from "react";
+import type { Route } from "next";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Breadcrumb } from "@/components/ui/breadcrumb";
+import { routes } from "@/lib/routes";
 import { SpeechBubble } from "@/components/ui/speech-bubble";
 import type { ReportReactionData } from "@/features/report-reaction/shared/types";
 import { ShareArticleButton } from "../../client/components/share-article-button";
@@ -13,7 +18,9 @@ import { ReportProblemButton } from "./report-problem-button";
 
 interface ReportContentProps {
   reportId: string;
-  billId: string;
+  billId?: string;
+  subjectHref?: string;
+  subjectLabel?: string;
   summary: string | null;
   stance: string | null;
   role: string | null;
@@ -45,6 +52,8 @@ interface ReportContentProps {
 export function ReportContent({
   reportId,
   billId,
+  subjectHref,
+  subjectLabel,
   summary,
   stance,
   role,
@@ -111,13 +120,31 @@ export function ReportContent({
           />
         )}
         {/* 法案の記事に戻るボタン */}
-        <BackToBillButton billId={billId} from={from} />
+        {billId ? (
+          <BackToBillButton billId={billId} from={from} />
+        ) : subjectHref ? (
+          <Button variant="outline" asChild>
+            <Link href={subjectHref as Route}>
+              {subjectLabel ?? "インタビューに戻る"}
+            </Link>
+          </Button>
+        ) : null}
         {/* 問題を報告する */}
         <ReportProblemButton />
       </div>
 
       {/* パンくずリスト */}
-      <ReportBreadcrumb billId={billId} />
+      {billId ? (
+        <ReportBreadcrumb billId={billId} />
+      ) : subjectHref ? (
+        <Breadcrumb
+          items={[
+            { label: "TOP", href: routes.home() },
+            { label: subjectLabel ?? "AIインタビュー", href: subjectHref },
+            { label: "レポート" },
+          ]}
+        />
+      ) : null}
     </div>
   );
 }

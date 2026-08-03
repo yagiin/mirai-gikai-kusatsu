@@ -8,7 +8,8 @@ import type { InterviewReport } from "../../shared/types";
 import { findReportWithSessionById } from "../repositories/interview-report-repository";
 
 export type InterviewReportWithSessionInfo = InterviewReport & {
-  bill_id: string;
+  bill_id: string | null;
+  interview_topic_id: string | null;
   session_started_at: string;
   session_completed_at: string | null;
 };
@@ -43,7 +44,10 @@ export async function getInterviewReportById(
     user_id: string;
     started_at: string;
     completed_at: string | null;
-    interview_configs: { bill_id: string } | null;
+    interview_configs: {
+      bill_id: string | null;
+      interview_topic_id: string | null;
+    } | null;
   } | null;
 
   if (!session) {
@@ -73,6 +77,7 @@ export async function getInterviewReportById(
   return {
     ...reportData,
     bill_id: session.interview_configs.bill_id,
+    interview_topic_id: session.interview_configs.interview_topic_id,
     session_started_at: session.started_at,
     session_completed_at: session.completed_at,
   };

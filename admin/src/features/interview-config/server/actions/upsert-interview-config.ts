@@ -157,6 +157,12 @@ export async function duplicateInterviewConfig(
     const originalQuestions = await findInterviewQuestionsByConfigId(configId);
 
     const targetBillId = options?.targetBillId ?? originalConfig.bill_id;
+    if (!targetBillId) {
+      return {
+        success: false,
+        error: "一般テーマ型インタビューは議案へ複製できません",
+      };
+    }
 
     // 新しい設定を作成（ステータスは非公開で複製）
     let newConfig: { id: string };

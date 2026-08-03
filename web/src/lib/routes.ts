@@ -25,6 +25,9 @@ export const routes = {
   interviewDisclosure: (billId: string) =>
     `/bills/${billId}/interview/disclosure` as const,
   interviewChat: (billId: string) => `/bills/${billId}/interview/chat` as const,
+  interviewTopics: () => "/interviews" as const,
+  interviewTopic: (slug: string) => `/interviews/${slug}` as const,
+  interviewTopicChat: (slug: string) => `/interviews/${slug}/chat` as const,
 
   // ── プレビュー（token 付き） ──────────────────────
   previewBillDetail: (billId: string, token: string) =>

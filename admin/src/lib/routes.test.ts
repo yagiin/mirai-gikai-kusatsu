@@ -19,7 +19,10 @@ function collectAppRoutes(appDir: string): string[] {
         const rel = path.relative(appDir, dir);
         // ルートグループ除去: (protected) など
         const route =
-          `/${rel.replace(/\([^)]+\)\/?/g, "")}`.replace(/\/+$/, "") || "/";
+          `/${rel.replace(/\\/g, "/").replace(/\([^)]+\)\/?/g, "")}`.replace(
+            /\/+$/,
+            ""
+          ) || "/";
         results.push(route);
       }
     }
@@ -53,7 +56,7 @@ function collectDefinedRoutes(): string[] {
     }
   }
 
-  return patterns.sort();
+  return patterns.filter((route) => !route.endsWith(".pdf")).sort();
 }
 
 /**

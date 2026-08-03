@@ -375,11 +375,12 @@ export type Database = {
       }
       interview_configs: {
         Row: {
-          bill_id: string
+          bill_id: string | null
           chat_model: string | null
           created_at: string
           estimated_duration: number | null
           id: string
+          interview_topic_id: string | null
           mode: Database["public"]["Enums"]["interview_mode_enum"]
           name: string
           status: Database["public"]["Enums"]["interview_config_status_enum"]
@@ -387,11 +388,12 @@ export type Database = {
           updated_at: string
         }
         Insert: {
-          bill_id: string
+          bill_id?: string | null
           chat_model?: string | null
           created_at?: string
           estimated_duration?: number | null
           id?: string
+          interview_topic_id?: string | null
           mode?: Database["public"]["Enums"]["interview_mode_enum"]
           name: string
           status?: Database["public"]["Enums"]["interview_config_status_enum"]
@@ -399,11 +401,12 @@ export type Database = {
           updated_at?: string
         }
         Update: {
-          bill_id?: string
+          bill_id?: string | null
           chat_model?: string | null
           created_at?: string
           estimated_duration?: number | null
           id?: string
+          interview_topic_id?: string | null
           mode?: Database["public"]["Enums"]["interview_mode_enum"]
           name?: string
           status?: Database["public"]["Enums"]["interview_config_status_enum"]
@@ -418,7 +421,47 @@ export type Database = {
             referencedRelation: "bills"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "interview_configs_interview_topic_id_fkey"
+            columns: ["interview_topic_id"]
+            isOneToOne: false
+            referencedRelation: "interview_topics"
+            referencedColumns: ["id"]
+          },
         ]
+      }
+      interview_topics: {
+        Row: {
+          background: string | null
+          created_at: string
+          description: string
+          id: string
+          purpose: string | null
+          slug: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          background?: string | null
+          created_at?: string
+          description: string
+          id?: string
+          purpose?: string | null
+          slug: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          background?: string | null
+          created_at?: string
+          description?: string
+          id?: string
+          purpose?: string | null
+          slug?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
       interview_messages: {
         Row: {

@@ -93,6 +93,7 @@ export default async function InterviewPreviewChatPage({
         <PreviewBanner />
         <InterviewChatClient
           billId={billId}
+          interviewConfigId={interviewConfig.id}
           billTitle={bill.bill_content?.title ?? bill.name}
           sessionId={session.id}
           initialMessages={messages}

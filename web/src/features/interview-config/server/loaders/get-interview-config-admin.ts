@@ -3,6 +3,7 @@ import { unstable_cache } from "next/cache";
 import { CACHE_TAGS } from "@/lib/cache-tags";
 import {
   findLatestInterviewConfigByBillId,
+  findInterviewConfigById,
   findPublicInterviewConfigByBillId,
 } from "../repositories/interview-config-repository";
 
@@ -17,6 +18,18 @@ export async function getInterviewConfigAdmin(
   billId: string
 ): Promise<InterviewConfig | null> {
   return _getCachedInterviewConfigAdmin(billId);
+}
+
+export async function getInterviewConfigByIdAdmin(
+  configId: string
+): Promise<InterviewConfig | null> {
+  const { data, error } = await findInterviewConfigById(configId);
+  if (error) {
+    if (error.code === "PGRST116") return null;
+    console.error("Failed to fetch interview config by id:", error);
+    return null;
+  }
+  return data;
 }
 
 const _getCachedInterviewConfigAdmin = unstable_cache(

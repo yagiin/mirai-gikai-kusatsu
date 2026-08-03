@@ -2,17 +2,20 @@ import type { MetadataRoute } from "next";
 import { getBills } from "@/features/bills/server/loaders/get-bills";
 import { getPublishedGeneralQuestions } from "@/features/general-questions/server/loaders/get-published-general-questions";
 import { getPublishedGlossaryTerms } from "@/features/glossary/server/loaders/get-published-glossary-terms";
+import { findPublicInterviewTopics } from "@/features/interview-topics/server/repositories/interview-topic-repository";
 import { env } from "@/lib/env";
 import { routes } from "@/lib/routes";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = env.webUrl.replace(/\/$/, "");
 
-  const [bills, glossaryTerms, generalQuestions] = await Promise.all([
-    getBills(),
-    getPublishedGlossaryTerms(),
-    getPublishedGeneralQuestions(),
-  ]);
+  const [bills, glossaryTerms, generalQuestions, interviewTopics] =
+    await Promise.all([
+      getBills(),
+      getPublishedGlossaryTerms(),
+      getPublishedGeneralQuestions(),
+      findPublicInterviewTopics(),
+    ]);
 
   const billUrls = bills.map((bill) => ({
     url: `${baseUrl}${routes.billDetail(bill.id)}`,
@@ -33,6 +36,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     lastModified: new Date(question.updated_at),
     changeFrequency: "monthly" as const,
     priority: 0.6,
+  }));
+
+  const interviewTopicUrls = interviewTopics.map((topic) => ({
+    url: `${baseUrl}${routes.interviewTopic(topic.slug)}`,
+    lastModified: new Date(topic.updated_at),
+    changeFrequency: "weekly" as const,
+    priority: 0.7,
   }));
 
   return [
@@ -57,5 +67,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...billUrls,
     ...glossaryUrls,
     ...generalQuestionUrls,
+    ...interviewTopicUrls,
   ];
 }

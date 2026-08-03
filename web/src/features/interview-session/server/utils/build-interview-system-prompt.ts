@@ -1,6 +1,11 @@
 import "server-only";
 
 import type { BillWithContent } from "@/features/bills/shared/types";
+import type { InterviewTopic } from "@/features/interview-topics/shared/types";
+import {
+  buildGeneralInterviewSystemPrompt,
+  buildGeneralSummarySystemPrompt,
+} from "@/features/interview-topics/shared/build-general-interview-prompt";
 import type { getInterviewConfig } from "@/features/interview-config/server/loaders/get-interview-config";
 import type { getInterviewQuestions } from "@/features/interview-config/server/loaders/get-interview-questions";
 import { bulkModeLogic } from "./interview-logic/bulk-mode";
@@ -20,6 +25,7 @@ const modeLogicMap = {
  */
 export function buildInterviewSystemPrompt({
   bill,
+  topic,
   interviewConfig,
   questions,
   nextQuestionId,
@@ -28,6 +34,7 @@ export function buildInterviewSystemPrompt({
   remainingMinutes,
 }: {
   bill: BillWithContent | null;
+  topic?: InterviewTopic | null;
   interviewConfig: Awaited<ReturnType<typeof getInterviewConfig>>;
   questions: Awaited<ReturnType<typeof getInterviewQuestions>>;
   nextQuestionId?: string;
@@ -35,6 +42,18 @@ export function buildInterviewSystemPrompt({
   askedQuestionIds: Set<string>;
   remainingMinutes?: number | null;
 }): string {
+  if (topic) {
+    return buildGeneralInterviewSystemPrompt({
+      topic,
+      mode: interviewConfig?.mode ?? "loop",
+      themes: interviewConfig?.themes ?? null,
+      questions,
+      nextQuestionId,
+      currentStage,
+      askedQuestionIds,
+      remainingMinutes,
+    });
+  }
   // DBの設定からモードを取得
   const mode = interviewConfig?.mode ?? "loop";
   const logic = modeLogicMap[mode] ?? bulkModeLogic;
@@ -51,3 +70,4 @@ export function buildInterviewSystemPrompt({
 }
 
 export { buildSummarySystemPrompt } from "../../shared/utils/build-summary-system-prompt";
+export { buildGeneralSummarySystemPrompt };

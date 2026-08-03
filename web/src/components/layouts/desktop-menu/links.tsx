@@ -21,6 +21,11 @@ const links: FooterLinkItem[] = [
     external: false,
   },
   {
+    label: "AIインタビュー",
+    href: routes.interviewTopics(),
+    external: false,
+  },
+  {
     label: "本家「みらい議会」",
     href: EXTERNAL_LINKS.ORIGINAL_MIRAI_GIKAI,
     external: true,

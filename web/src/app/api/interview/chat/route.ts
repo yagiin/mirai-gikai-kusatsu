@@ -17,11 +17,13 @@ export async function POST(req: Request) {
   const {
     messages,
     billId,
+    interviewConfigId,
     currentStage,
     isRetry,
   }: {
     messages: Array<{ role: string; content: string }>;
-    billId: string;
+    billId?: string;
+    interviewConfigId?: string;
     currentStage: "chat" | "summary" | "summary_complete";
     isRetry?: boolean;
   } = body;
@@ -35,8 +37,11 @@ export async function POST(req: Request) {
     return jsonResponse({ error: "Anonymous session required" }, 401);
   }
 
-  if (!billId) {
-    return jsonResponse({ error: "billId is required" }, 400);
+  if (!billId && !interviewConfigId) {
+    return jsonResponse(
+      { error: "billId or interviewConfigId is required" },
+      400
+    );
   }
 
   try {
@@ -47,6 +52,7 @@ export async function POST(req: Request) {
     return await handleInterviewChatRequest({
       messages,
       billId,
+      interviewConfigId,
       currentStage,
       isRetry,
       userId: user.id,

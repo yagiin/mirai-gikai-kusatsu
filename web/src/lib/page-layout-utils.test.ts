@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import {
   extractBillIdFromPath,
+  extractInterviewTopicSlugFromPath,
   isInterviewPage,
   isInterviewSection,
   isMainPage,
@@ -35,6 +36,10 @@ describe("isInterviewPage", () => {
     expect(isInterviewPage("/bills/abc-123/interview/chat")).toBe(true);
   });
 
+  it("一般テーマ型のチャットページを判定する", () => {
+    expect(isInterviewPage("/interviews/public-transport/chat")).toBe(true);
+  });
+
   it("returns false for an interview page without /chat", () => {
     expect(isInterviewPage("/bills/abc-123/interview")).toBe(false);
   });
@@ -57,6 +62,11 @@ describe("isInterviewSection", () => {
     expect(isInterviewSection("/bills/abc-123/interview/chat")).toBe(true);
   });
 
+  it("一般テーマ型のLPとチャットを判定する", () => {
+    expect(isInterviewSection("/interviews/public-transport")).toBe(true);
+    expect(isInterviewSection("/interviews/public-transport/chat")).toBe(true);
+  });
+
   it("returns false for a bill detail page", () => {
     expect(isInterviewSection("/bills/abc-123")).toBe(false);
   });
@@ -67,6 +77,18 @@ describe("isInterviewSection", () => {
 
   it("returns false for unrelated paths", () => {
     expect(isInterviewSection("/about")).toBe(false);
+  });
+});
+
+describe("extractInterviewTopicSlugFromPath", () => {
+  it("一般テーマ型インタビューのslugを抽出する", () => {
+    expect(
+      extractInterviewTopicSlugFromPath("/interviews/public-transport/chat")
+    ).toBe("public-transport");
+  });
+
+  it("一般テーマ型以外のパスではnullを返す", () => {
+    expect(extractInterviewTopicSlugFromPath("/bills/abc-123")).toBeNull();
   });
 });
 

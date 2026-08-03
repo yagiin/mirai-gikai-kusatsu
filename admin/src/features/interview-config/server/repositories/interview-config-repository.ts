@@ -4,7 +4,8 @@ import type { InterviewMode } from "@mirai-gikai/shared/interview-prompts/types"
 import { createAdminClient } from "@mirai-gikai/supabase";
 import type { InterviewConfig, InterviewQuestion } from "../../shared/types";
 
-export type InterviewConfigWithBill = InterviewConfig & {
+export type InterviewConfigWithBill = Omit<InterviewConfig, "bill_id"> & {
+  bill_id: string;
   bill: { id: string; name: string };
 };
 
@@ -75,7 +76,10 @@ export async function findInterviewConfigBillId(
     throw new Error(`Failed to fetch interview config: ${error.message}`);
   }
 
-  return data;
+  if (!data.bill_id) {
+    throw new Error("Interview config is not associated with a bill");
+  }
+  return { bill_id: data.bill_id };
 }
 
 export async function findInterviewQuestionsByConfigId(

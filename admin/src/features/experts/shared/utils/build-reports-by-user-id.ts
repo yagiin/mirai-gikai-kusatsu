@@ -9,7 +9,7 @@ type SessionWithReport = {
   } | null;
   interview_configs: {
     id: string;
-    bill_id: string;
+    bill_id: string | null;
     bills: {
       id: string;
       name: string;

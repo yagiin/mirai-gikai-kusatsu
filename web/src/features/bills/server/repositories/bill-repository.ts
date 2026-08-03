@@ -493,5 +493,9 @@ export async function findBillIdsWithPublicInterview(
     return new Set();
   }
 
-  return new Set(data.map((row) => row.bill_id));
+  return new Set(
+    data
+      .map((row) => row.bill_id)
+      .filter((billId): billId is string => billId !== null)
+  );
 }

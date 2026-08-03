@@ -25,7 +25,11 @@ import { TimeUpPrompt } from "./time-up-prompt";
 
 interface InterviewChatClientProps {
   billId: string;
+  interviewConfigId?: string;
   billTitle: string;
+  subjectHref?: string;
+  exitHref?: string;
+  introText?: string;
   sessionId: string;
   initialMessages: Array<{
     id: string;
@@ -43,7 +47,11 @@ interface InterviewChatClientProps {
 
 export function InterviewChatClient({
   billId,
+  interviewConfigId,
   billTitle,
+  subjectHref,
+  exitHref,
+  introText,
   sessionId,
   initialMessages,
   mode,
@@ -70,6 +78,7 @@ export function InterviewChatClient({
     handleRetry,
   } = useInterviewChat({
     billId,
+    interviewConfigId,
     initialMessages,
   });
 
@@ -91,7 +100,7 @@ export function InterviewChatClient({
     hasRated,
   });
 
-  const billDetailLink = getBillDetailLink(billId, previewToken);
+  const billDetailLink = subjectHref ?? getBillDetailLink(billId, previewToken);
 
   const showProgressBar = isLoopFamilyMode(mode) && progress !== null;
   const timerMinutes =
@@ -175,7 +184,7 @@ export function InterviewChatClient({
             {messages.length === 0 && !object && (
               <div className="flex flex-col gap-4">
                 <p className="text-sm font-bold leading-[1.8] text-mirai-text">
-                  議案についてのAIインタビューを開始します。
+                  {introText ?? "議案についてのAIインタビューを開始します。"}
                 </p>
                 <p className="text-sm text-gray-600">
                   あなたの意見や経験をお聞かせください。
@@ -292,6 +301,7 @@ export function InterviewChatClient({
             <InterviewSummaryInput
               sessionId={sessionId}
               billId={billId}
+              exitHref={exitHref}
               hasReport={hasReport}
               previewToken={previewToken}
               input={input}

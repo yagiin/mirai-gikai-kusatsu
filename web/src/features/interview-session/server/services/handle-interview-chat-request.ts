@@ -15,11 +15,16 @@ import {
 } from "@/features/chat/server/services/cost-tracker";
 import { ChatError, ChatErrorCode } from "@/features/chat/shared/types/errors";
 import type { InterviewConfig } from "@/features/interview-config/server/loaders/get-interview-config-admin";
-import { getInterviewConfigAdmin } from "@/features/interview-config/server/loaders/get-interview-config-admin";
+import {
+  getInterviewConfigAdmin,
+  getInterviewConfigByIdAdmin,
+} from "@/features/interview-config/server/loaders/get-interview-config-admin";
 import { getInterviewQuestions } from "@/features/interview-config/server/loaders/get-interview-questions";
 import { createInterviewSession } from "@/features/interview-session/server/actions/create-interview-session";
 import { getInterviewMessages } from "@/features/interview-session/server/loaders/get-interview-messages";
 import { getInterviewSession } from "@/features/interview-session/server/loaders/get-interview-session";
+import { getInterviewSubject } from "@/features/interview-session/server/loaders/get-interview-subject";
+import type { InterviewTopic } from "@/features/interview-topics/shared/types";
 import {
   interviewChatTextSchema,
   interviewChatWithReportSchema,
@@ -35,6 +40,7 @@ import { logger } from "@/lib/logger";
 import { ensureTrailingUserMessage } from "../../shared/utils/ensure-trailing-user-message";
 import { mergeMessagesWithIds } from "../../shared/utils/merge-messages-with-ids";
 import {
+  buildGeneralSummarySystemPrompt,
   buildInterviewSystemPrompt,
   buildSummarySystemPrompt,
 } from "../utils/build-interview-system-prompt";
@@ -74,6 +80,7 @@ export type InterviewChatDeps = {
 export async function handleInterviewChatRequest({
   messages,
   billId,
+  interviewConfigId,
   currentStage,
   isRetry = false,
   userId,
@@ -94,18 +101,34 @@ export async function handleInterviewChatRequest({
   // リクエスト単位のトレースID（同一リクエスト内のLLM呼び出しをまとめる）
   const traceId = crypto.randomUUID();
 
-  // インタビュー設定と法案情報を取得（テスト時はdeps経由でNext.js依存をバイパス）
-  const getInterviewConfigFn =
-    deps?.getInterviewConfig ?? getInterviewConfigAdmin;
-  const getBillFn = deps?.getBill ?? getBillByIdAdmin;
-  const [interviewConfig, bill] = await Promise.all([
-    getInterviewConfigFn(billId),
-    getBillFn(billId),
-  ]);
+  let interviewConfig: InterviewConfig | null;
+  let bill: BillWithContent | null;
+  let topic: InterviewTopic | null = null;
+
+  if (interviewConfigId) {
+    interviewConfig = await getInterviewConfigByIdAdmin(interviewConfigId);
+    if (!interviewConfig) throw new Error("Interview config not found");
+    const subject = await getInterviewSubject(interviewConfig);
+    if (!subject) throw new Error("Interview subject not found");
+    bill = subject.bill;
+    topic = subject.topic;
+  } else {
+    if (!billId) throw new Error("Interview target not found");
+    const getInterviewConfigFn =
+      deps?.getInterviewConfig ?? getInterviewConfigAdmin;
+    const getBillFn = deps?.getBill ?? getBillByIdAdmin;
+    [interviewConfig, bill] = await Promise.all([
+      getInterviewConfigFn(billId),
+      getBillFn(billId),
+    ]);
+  }
 
   if (!interviewConfig) {
     throw new Error("Interview config not found");
   }
+  const targetId =
+    interviewConfig.bill_id ?? interviewConfig.interview_topic_id ?? billId;
+  if (!targetId) throw new Error("Interview target not found");
 
   // セッション取得または作成（テスト時はdeps経由で認証をバイパス）
   const getSessionFn = deps?.getSession ?? getInterviewSession;
@@ -171,13 +194,20 @@ export async function handleInterviewChatRequest({
 
   // システムプロンプトを構築（ステージ遷移ガイダンスを含む）
   const systemPrompt = isSummaryPhase
-    ? buildSummarySystemPrompt({
-        bill,
-        interviewConfig,
-        messages: summaryMessages,
-      })
+    ? topic
+      ? buildGeneralSummarySystemPrompt({
+          topic,
+          themes: interviewConfig.themes,
+          messages: summaryMessages,
+        })
+      : buildSummarySystemPrompt({
+          bill,
+          interviewConfig,
+          messages: summaryMessages,
+        })
     : buildInterviewSystemPrompt({
         bill,
+        topic,
         interviewConfig,
         questions,
         nextQuestionId: effectiveNextQuestionId,
@@ -194,14 +224,14 @@ export async function handleInterviewChatRequest({
     messages,
     sessionId: session.id,
     userId,
-    billId,
+    billId: targetId,
     isSummaryPhase,
     chatModel: deps?.chatModel,
     summaryModel: deps?.summaryModel,
     configChatModel: interviewConfig.chat_model,
     telemetry: {
       sessionId: session.id,
-      billId,
+      billId: targetId,
       traceId,
       stage: currentStage,
     },

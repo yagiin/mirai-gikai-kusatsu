@@ -72,6 +72,15 @@ export async function reextractReportOpinions(
       return { reportId, status: "skipped", reason: "config not found" };
     }
 
+    if (!interviewConfig.bill_id) {
+      await markReextractionAttempted(reportId, nowIso);
+      return {
+        reportId,
+        status: "skipped",
+        reason: "general topic interview",
+      };
+    }
+
     const chatMessages = prepareReextractionMessages(messages ?? []);
     if (chatMessages.length === 0) {
       await markReextractionAttempted(reportId, nowIso);

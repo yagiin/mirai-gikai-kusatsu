@@ -27,6 +27,10 @@ export const primaryLinks: FooterLink[] = [
     href: routes.generalQuestions(),
   },
   {
+    label: "AIインタビュー",
+    href: routes.interviewTopics(),
+  },
+  {
     label: "本家「みらい議会」",
     href: EXTERNAL_LINKS.ORIGINAL_MIRAI_GIKAI,
     external: true,

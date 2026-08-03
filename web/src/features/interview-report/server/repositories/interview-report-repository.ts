@@ -12,7 +12,7 @@ export async function findReportWithSessionById(reportId: string) {
   const { data, error } = await supabase
     .from("interview_report")
     .select(
-      "*, interview_sessions(user_id, started_at, completed_at, interview_configs(bill_id))"
+      "*, interview_sessions(user_id, started_at, completed_at, interview_configs(bill_id, interview_topic_id))"
     )
     .eq("id", reportId)
     .single();

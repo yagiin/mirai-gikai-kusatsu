@@ -20,6 +20,9 @@ export const routes = {
   dietSessions: () => "/diet-sessions" as const,
   experts: () => "/experts" as const,
   interviews: () => "/interviews" as const,
+  interviewTopicNew: () => "/interviews/topics/new" as const,
+  interviewTopicEdit: (topicId: string) =>
+    `/interviews/topics/${topicId}/edit` as const,
   interviewOpinionBackfill: () => "/interview-opinion-backfill" as const,
 
   // ── 議案配下 ──────────────────────────────────────
@@ -51,4 +54,9 @@ export const routes = {
     versionId: string
   ) =>
     `/bills/${billId}/interview/${configId}/topic-analysis/${versionId}` as const,
+} as const;
+
+export const apiRoutes = {
+  interviewTopicKouchouCsv: (topicId: string) =>
+    `/api/interview-topics/${topicId}/kouchou-ai-csv` as const,
 } as const;

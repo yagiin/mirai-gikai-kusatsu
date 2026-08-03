@@ -10,6 +10,8 @@ import { PublicStatusSection } from "@/features/interview-report/client/componen
 import { getInterviewReportById } from "@/features/interview-report/server/loaders/get-interview-report-by-id";
 import { getInterviewMessages } from "@/features/interview-session/server/loaders/get-interview-messages";
 import { getAuthenticatedUser } from "@/features/interview-session/server/utils/verify-session-ownership";
+import { findInterviewTopicById } from "@/features/interview-topics/server/repositories/interview-topic-repository";
+import { routes } from "@/lib/routes";
 import { ExpertRegistrationSection } from "../../client/components/expert-registration-section";
 import { ReportContent } from "../../shared/components/report-content";
 import { isExpertRegistrationTargetRole } from "../../shared/utils/expert-registration-validation";
@@ -33,26 +35,39 @@ export async function ReportCompletePage({
   }
 
   const billId = report.bill_id;
+  const topicId = report.interview_topic_id;
+
+  if (!billId && !topicId) {
+    notFound();
+  }
 
   const isExpertRole = isExpertRegistrationTargetRole(report.role);
   const authResult = await getAuthenticatedUser();
 
-  // 法案・メッセージ・有識者登録状況を並列取得
-  const [bill, messages, isExpertRegistered] = await Promise.all([
-    getBillById(billId),
+  // 対象・メッセージ・有識者登録状況を並列取得
+  const [bill, topic, messages, isExpertRegistered] = await Promise.all([
+    billId ? getBillById(billId) : Promise.resolve(null),
+    topicId ? findInterviewTopicById(topicId) : Promise.resolve(null),
     getInterviewMessages(report.interview_session_id),
-    isExpertRole && authResult.authenticated
+    billId && isExpertRole && authResult.authenticated
       ? getExpertRegistrationStatus(authResult.userId)
       : Promise.resolve(false),
   ]);
 
-  if (!bill) {
+  if ((!billId || !bill) && (!topicId || !topic)) {
     notFound();
   }
 
   const opinions = parseOpinions(report.opinions);
   const characterCount = countCharacters(messages);
-  const billName = bill.bill_content?.title || bill.name;
+  const subject = bill
+    ? {
+        name: bill.bill_content?.title || bill.name,
+        href: getBillDetailLink(bill.id),
+      }
+    : topic
+      ? { name: topic.title, href: routes.interviewTopic(topic.slug) }
+      : notFound();
 
   return (
     <div className="min-h-dvh bg-mirai-surface">
@@ -90,10 +105,10 @@ export async function ReportCompletePage({
               インタビューレポート
             </h2>
             <Link
-              href={getBillDetailLink(billId) as Route}
+              href={subject.href as Route}
               className="text-sm text-black underline"
             >
-              {billName}
+              {subject.name}
             </Link>
             <PublicStatusSection
               sessionId={report.interview_session_id}
@@ -104,7 +119,9 @@ export async function ReportCompletePage({
           {/* レポート本体（共通コンポーネント） */}
           <ReportContent
             reportId={reportId}
-            billId={billId}
+            billId={billId ?? undefined}
+            subjectHref={billId ? undefined : subject.href}
+            subjectLabel={billId ? undefined : subject.name}
             from="complete"
             summary={report.summary}
             stance={report.stance}
@@ -117,7 +134,7 @@ export async function ReportCompletePage({
             opinions={opinions}
           >
             {/* 有識者リスト登録バナー */}
-            {isExpertRole && !isExpertRegistered && (
+            {billId && isExpertRole && !isExpertRegistered && (
               <ExpertRegistrationSection />
             )}
           </ReportContent>

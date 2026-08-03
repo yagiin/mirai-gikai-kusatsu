@@ -13,6 +13,7 @@ import { InterviewChatInput } from "./interview-chat-input";
 interface InterviewSummaryInputProps {
   sessionId: string;
   billId: string;
+  exitHref?: string;
   hasReport: boolean;
   previewToken?: string;
   input: string;
@@ -25,6 +26,7 @@ interface InterviewSummaryInputProps {
 export function InterviewSummaryInput({
   sessionId,
   billId,
+  exitHref,
   hasReport,
   previewToken,
   input,
@@ -51,7 +53,11 @@ export function InterviewSummaryInput({
             </Button>
           ) : (
             <Button variant="outline" asChild>
-              <Link href={getBillDetailLink(billId, previewToken) as Route}>
+              <Link
+                href={
+                  (exitHref ?? getBillDetailLink(billId, previewToken)) as Route
+                }
+              >
                 インタビューを終了する
               </Link>
             </Button>

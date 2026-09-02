@@ -6,18 +6,21 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { createDietSession } from "../../server/actions/create-diet-session";
 
 export function DietSessionForm() {
   const nameId = useId();
   const slugId = useId();
   const shugiinUrlId = useId();
+  const overviewId = useId();
   const startDateId = useId();
   const endDateId = useId();
 
   const [name, setName] = useState("");
   const [slug, setSlug] = useState("");
   const [shugiinUrl, setShugiinUrl] = useState("");
+  const [overview, setOverview] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -47,6 +50,7 @@ export function DietSessionForm() {
         name,
         slug: slug || null,
         shugiin_url: shugiinUrl || null,
+        overview: overview || null,
         start_date: startDate,
         end_date: endDate,
       });
@@ -58,6 +62,7 @@ export function DietSessionForm() {
         setName("");
         setSlug("");
         setShugiinUrl("");
+        setOverview("");
         setStartDate("");
         setEndDate("");
       }
@@ -125,6 +130,21 @@ export function DietSessionForm() {
           placeholder="https://www.city.kusatsu.shiga.jp/..."
           disabled={isSubmitting}
         />
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor={overviewId}>この議会の特徴・概要</Label>
+        <Textarea
+          id={overviewId}
+          value={overview}
+          onChange={(e) => setOverview(e.target.value)}
+          placeholder="例: 9月議会は、前年度の決算を審査する「決算議会」です。"
+          rows={3}
+          maxLength={500}
+          disabled={isSubmitting}
+        />
+        <p className="text-xs text-muted-foreground">
+          トップページに掲載します（500文字以内・未入力の場合は非表示）
+        </p>
       </div>
       <div className="flex justify-end">
         <Button type="submit" disabled={isSubmitting}>

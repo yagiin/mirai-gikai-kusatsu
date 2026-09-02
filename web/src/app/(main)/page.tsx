@@ -12,6 +12,7 @@ import { PreviousSessionSection } from "@/features/bills/server/components/previ
 import { getBillsByDietSession } from "@/features/bills/server/loaders/get-bills-by-diet-session";
 import { loadHomeData } from "@/features/bills/server/loaders/load-home-data";
 import { CurrentDietSession } from "@/features/diet-sessions/client/components/current-diet-session";
+import { SessionOverviewSection } from "@/features/diet-sessions/server/components/session-overview-section";
 import { getActiveDietSession } from "@/features/diet-sessions/server/loaders/get-active-diet-session";
 import { getCurrentDietSession } from "@/features/diet-sessions/server/loaders/get-current-diet-session";
 import { HomeGeneralQuestionSection } from "@/features/general-questions/server/components/home-general-question-section";
@@ -23,10 +24,9 @@ export default async function Home() {
     await loadHomeData();
 
   // ゆくゆくタグ機能がマージされたらBFFに統合する
-  const [currentSession, activeSession, generalQuestions] = await Promise.all([
+  const [currentSession, activeSession] = await Promise.all([
     getCurrentDietSession(getJapanTime()),
     getActiveDietSession(),
-    getPublishedGeneralQuestions(),
   ]);
   const sessionSlug =
     activeSession?.slug ??
@@ -34,9 +34,12 @@ export default async function Home() {
     previousSessionData?.session.slug ??
     undefined;
   const displaySession = activeSession ?? currentSession;
-  const currentSessionBills = displaySession
-    ? await getBillsByDietSession(displaySession.id)
-    : [];
+  const [currentSessionBills, generalQuestions] = displaySession
+    ? await Promise.all([
+        getBillsByDietSession(displaySession.id),
+        getPublishedGeneralQuestions(displaySession.id),
+      ])
+    : [[], []];
 
   return (
     <>
@@ -49,6 +52,10 @@ export default async function Home() {
       <Container className="">
         <div className="py-10">
           <main className="flex flex-col gap-16">
+            {displaySession && (
+              <SessionOverviewSection session={displaySession} />
+            )}
+
             {displaySession && (
               <CurrentSessionSection
                 session={displaySession}
@@ -66,7 +73,12 @@ export default async function Home() {
             <BillsByTagSection billsByTag={billsByTag} />
 
             {/* 一般質問セクション */}
-            <HomeGeneralQuestionSection questions={generalQuestions} />
+            {displaySession && (
+              <HomeGeneralQuestionSection
+                questions={generalQuestions}
+                sessionName={displaySession.name}
+              />
+            )}
 
             {/* Coming soonセクション: 市議会運用では当面非表示 */}
             {/* <ComingSoonSection bills={comingSoonBills} /> */}

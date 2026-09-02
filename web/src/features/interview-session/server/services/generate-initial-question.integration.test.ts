@@ -51,7 +51,6 @@ describe("generateInitialQuestion 統合テスト", () => {
 
     const result = await generateInitialQuestion({
       sessionId,
-      billId,
       interviewConfigId,
       userId: testUser.id,
       deps: { model: mockModel },
@@ -80,7 +79,6 @@ describe("generateInitialQuestion 統合テスト", () => {
 
     const result = await generateInitialQuestion({
       sessionId,
-      billId,
       interviewConfigId,
       userId: testUser.id,
       deps: { model: mockModel },
@@ -98,15 +96,13 @@ describe("generateInitialQuestion 統合テスト", () => {
     expect(messages).toHaveLength(0);
   });
 
-  it("interview_configが存在しないbillIdの場合はnullを返す", async () => {
-    // 存在しないbillId
-    const nonExistentBillId = "00000000-0000-0000-0000-000000000000";
+  it("interview_configが存在しない場合はnullを返す", async () => {
+    const nonExistentConfigId = "00000000-0000-0000-0000-000000000000";
     const mockModel = createGenerateMock(llmResponse);
 
     const result = await generateInitialQuestion({
       sessionId,
-      billId: nonExistentBillId,
-      interviewConfigId,
+      interviewConfigId: nonExistentConfigId,
       userId: testUser.id,
       deps: { model: mockModel },
     });

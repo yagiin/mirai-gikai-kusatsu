@@ -20,6 +20,7 @@ export async function createDietSessionRecord(input: {
   name: string;
   slug: string | null;
   shugiin_url: string | null;
+  overview: string | null;
   start_date: string;
   end_date: string;
 }) {
@@ -30,6 +31,7 @@ export async function createDietSessionRecord(input: {
       name: input.name,
       slug: input.slug,
       shugiin_url: input.shugiin_url,
+      overview: input.overview,
       start_date: input.start_date,
       end_date: input.end_date,
     })
@@ -49,6 +51,7 @@ export async function updateDietSessionRecord(
     name: string;
     slug: string | null;
     shugiin_url: string | null;
+    overview: string | null;
     start_date: string;
     end_date: string;
   }
@@ -60,6 +63,7 @@ export async function updateDietSessionRecord(
       name: input.name,
       slug: input.slug,
       shugiin_url: input.shugiin_url,
+      overview: input.overview,
       start_date: input.start_date,
       end_date: input.end_date,
     })

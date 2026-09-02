@@ -1,5 +1,3 @@
-import { unstable_cache } from "next/cache";
-import { CACHE_TAGS } from "@/lib/cache-tags";
 import type { DietSession } from "../../shared/types";
 import { findActiveDietSession } from "../repositories/diet-session-repository";
 
@@ -9,16 +7,7 @@ import { findActiveDietSession } from "../repositories/diet-session-repository";
  * アクティブな会期がない場合は null を返す
  */
 export async function getActiveDietSession(): Promise<DietSession | null> {
-  return _getCachedActiveDietSession();
+  // 管理画面で更新した会期の概要をトップページへ即時反映するため、
+  // アクティブ会期はリクエストごとに最新値を取得する。
+  return findActiveDietSession();
 }
-
-const _getCachedActiveDietSession = unstable_cache(
-  async (): Promise<DietSession | null> => {
-    return findActiveDietSession();
-  },
-  ["active-diet-session-v2"],
-  {
-    revalidate: 3600, // 1 hour
-    tags: [CACHE_TAGS.DIET_SESSIONS],
-  }
-);

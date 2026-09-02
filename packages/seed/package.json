@@ -8,6 +8,8 @@
     "seed:csv": "tsx csv/import-csv.ts",
     "kusatsu:bills:export": "tsx kusatsu/export-bills.ts",
     "kusatsu:bills:prepare": "tsx kusatsu/prepare-r8-sep-bills.ts",
+    "kusatsu:bills:create:r8-sep": "tsx kusatsu/create-r8-sep-bills.ts",
+    "kusatsu:bills:verify:r8-sep": "tsx kusatsu/verify-r8-sep-bills.ts",
     "kusatsu:bills:prepare:r8-feb": "tsx kusatsu/prepare-r8-feb-bills.ts",
     "kusatsu:bills:update": "tsx kusatsu/update-bills.ts",
     "test": "vitest run",

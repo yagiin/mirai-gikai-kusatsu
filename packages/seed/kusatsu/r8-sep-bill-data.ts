@@ -4,7 +4,7 @@ const OFFICIAL_SOURCE_URL =
   "https://www.city.kusatsu.shiga.jp/shisei/gyoseijoho/" +
   "shityougiangiin/shityouteisyutsugian.html";
 
-interface R8SepBillData {
+export interface R8SepBillData {
   number: number;
   name: string;
   summary: string;
@@ -279,6 +279,27 @@ ${points}
 [草津市公式資料](${OFFICIAL_SOURCE_URL})
 
 > このページは草津市の公式資料を基に作成した要約です。正確な内容は出典資料をご確認ください。`;
+}
+
+export function buildR8SepBillRow(data: R8SepBillData): BillUpdateRow {
+  const name = `議第${data.number}号　${data.name}`;
+  return applyR8SepOfficialData({
+    id: `r8-9-gidai-${data.number}`,
+    name,
+    status: "introduced",
+    statusNote: null,
+    submittedDate: null,
+    publishStatus: "draft",
+    isFeatured: false,
+    slug: null,
+    sourceUrl: null,
+    normalTitle: name,
+    normalSummary: "未作成",
+    normalContent: "未作成",
+    hardTitle: name,
+    hardSummary: "未作成",
+    hardContent: "未作成",
+  });
 }
 
 export function applyR8SepOfficialData(row: BillUpdateRow): BillUpdateRow {

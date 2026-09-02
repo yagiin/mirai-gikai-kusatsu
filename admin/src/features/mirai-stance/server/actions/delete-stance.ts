@@ -11,7 +11,7 @@ export async function deleteStance(stanceId: string) {
   try {
     await deleteMiraiStance(stanceId);
 
-    invalidateWebCache([WEB_CACHE_TAGS.BILLS]);
+    await invalidateWebCache([WEB_CACHE_TAGS.BILLS]);
     return { success: true };
   } catch (error) {
     console.error("Error in deleteStance:", error);

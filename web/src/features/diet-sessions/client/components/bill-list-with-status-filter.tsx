@@ -7,45 +7,39 @@ import { Button } from "@/components/ui/button";
 import { CompactBillCard } from "@/features/bills/client/components/bill-list/compact-bill-card";
 import type { BillWithContent } from "@/features/bills/shared/types";
 import { routes } from "@/lib/routes";
-
-type FilterType = "all" | "enacted" | "rejected" | "other";
+import {
+  COMMITTEE_FILTERS,
+  type CommitteeFilter,
+  filterBillsByCommittee,
+  filterBillsByStatus,
+  getFilterCounts,
+  type StatusFilter,
+} from "../../shared/utils/bill-list-filters";
 
 type Props = {
   bills: BillWithContent[];
 };
 
-function getFilterCounts(bills: BillWithContent[]) {
-  const enacted = bills.filter((b) => b.status === "enacted").length;
-  const rejected = bills.filter((b) => b.status === "rejected").length;
-  const other = bills.length - enacted - rejected;
-
-  return { all: bills.length, enacted, rejected, other };
-}
-
-function filterBills(
-  bills: BillWithContent[],
-  filter: FilterType
-): BillWithContent[] {
-  switch (filter) {
-    case "enacted":
-      return bills.filter((b) => b.status === "enacted");
-    case "rejected":
-      return bills.filter((b) => b.status === "rejected");
-    case "other":
-      return bills.filter(
-        (b) => b.status !== "enacted" && b.status !== "rejected"
-      );
-    default:
-      return bills;
-  }
+function getFilterButtonClass(isActive: boolean) {
+  return `h-[29px] rounded-full px-4 py-1.5 text-sm font-bold transition-colors ${
+    isActive
+      ? "bg-mirai-gradient text-black hover:bg-mirai-gradient"
+      : "bg-mirai-surface-grouped text-mirai-text-muted hover:bg-mirai-surface-muted"
+  }`;
 }
 
 export function BillListWithStatusFilter({ bills }: Props) {
-  const [activeFilter, setActiveFilter] = useState<FilterType>("all");
+  const [activeStatusFilter, setActiveStatusFilter] =
+    useState<StatusFilter>("all");
+  const [activeCommitteeFilter, setActiveCommitteeFilter] =
+    useState<CommitteeFilter>("all");
   const counts = getFilterCounts(bills);
-  const filteredBills = filterBills(bills, activeFilter);
+  const filteredBills = filterBillsByCommittee(
+    filterBillsByStatus(bills, activeStatusFilter),
+    activeCommitteeFilter
+  );
 
-  const filters: { key: FilterType; label: string; count: number }[] = [
+  const statusFilters: { key: StatusFilter; label: string; count: number }[] = [
     { key: "all", label: "ALL", count: counts.all },
     { key: "enacted", label: "可決", count: counts.enacted },
     { key: "rejected", label: "否決", count: counts.rejected },
@@ -55,21 +49,45 @@ export function BillListWithStatusFilter({ bills }: Props) {
   return (
     <div className="flex flex-col gap-4">
       {/* フィルターボタン */}
-      <div className="flex flex-wrap gap-3">
-        {filters.map((filter) => (
+      <div className="flex flex-col gap-2">
+        <div className="flex flex-wrap gap-3">
+          {statusFilters.map((filter) => (
+            <Button
+              key={filter.key}
+              variant="ghost"
+              onClick={() => setActiveStatusFilter(filter.key)}
+              className={getFilterButtonClass(
+                activeStatusFilter === filter.key
+              )}
+            >
+              {filter.label} {filter.count}
+            </Button>
+          ))}
+        </div>
+        <div className="flex flex-wrap items-center gap-3">
+          <span className="text-sm font-bold text-mirai-text-muted">
+            所管委員会
+          </span>
           <Button
-            key={filter.key}
             variant="ghost"
-            onClick={() => setActiveFilter(filter.key)}
-            className={`h-[29px] px-4 py-1.5 rounded-full text-sm font-bold transition-colors ${
-              activeFilter === filter.key
-                ? "bg-mirai-gradient text-black hover:bg-mirai-gradient"
-                : "bg-mirai-surface-grouped text-mirai-text-muted hover:bg-mirai-surface-muted"
-            }`}
+            onClick={() => setActiveCommitteeFilter("all")}
+            className={getFilterButtonClass(activeCommitteeFilter === "all")}
           >
-            {filter.label} {filter.count}
+            すべて
           </Button>
-        ))}
+          {COMMITTEE_FILTERS.map((filter) => (
+            <Button
+              key={filter.key}
+              variant="ghost"
+              onClick={() => setActiveCommitteeFilter(filter.key)}
+              className={getFilterButtonClass(
+                activeCommitteeFilter === filter.key
+              )}
+            >
+              {filter.label}
+            </Button>
+          ))}
+        </div>
       </div>
 
       {/* 議案リスト */}

@@ -9,9 +9,10 @@ import { BillTag } from "./bill-tag";
 
 interface BillCardProps {
   bill: BillWithContent;
+  showCommitteeName?: boolean;
 }
 
-export function BillCard({ bill }: BillCardProps) {
+export function BillCard({ bill, showCommitteeName = false }: BillCardProps) {
   const displayTitle = bill.bill_content?.title;
   const summary = bill.bill_content?.summary;
 
@@ -63,6 +64,12 @@ export function BillCard({ bill }: BillCardProps) {
                   )}
                 </div>
               </div>
+              {showCommitteeName && bill.committee_name && (
+                <div className="text-sm text-mirai-text-secondary">
+                  <span className="font-medium">所管委員会：</span>
+                  <span>{bill.committee_name}</span>
+                </div>
+              )}
               <RubySafeLineClamp
                 text={summary}
                 maxLength={132}

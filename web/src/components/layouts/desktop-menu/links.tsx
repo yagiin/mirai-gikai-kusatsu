@@ -81,7 +81,7 @@ export function DesktopMenuLinks() {
           lineHeight: "1.48em",
         }}
       >
-        © 2026 みらいと維新の風
+        @草津市議会議員・八木よしと
       </p>
     </div>
   );

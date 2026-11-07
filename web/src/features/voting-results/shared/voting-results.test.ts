@@ -5,6 +5,7 @@ describe("getVotingResultsBySessionSlug", () => {
   it.each([
     ["r8-2-teireikai", 41],
     ["r8-6-teireikai", 17],
+    ["r8-9-teireikai", 28],
   ])("%s の公式表決結果を返す", (slug, resultCount) => {
     const session = getVotingResultsBySessionSlug(slug);
 
@@ -42,5 +43,26 @@ describe("getVotingResultsBySessionSlug", () => {
       .filter((index) => index >= 0);
 
     expect(support).toEqual([21, 22]);
+  });
+
+  it("9月定例会の意見書第8号の賛成者を保持する", () => {
+    const session = getVotingResultsBySessionSlug("r8-9-teireikai");
+    const result = session?.results.find(
+      (item) => item.proposalNumber === "意見書第8号"
+    );
+    const support = result?.votes
+      .map((vote, index) => (vote === "for" ? index : -1))
+      .filter((index) => index >= 0);
+
+    expect(support).toEqual([21, 22]);
+  });
+
+  it("9月定例会の議第77号で除斥を保持する", () => {
+    const session = getVotingResultsBySessionSlug("r8-9-teireikai");
+    const result = session?.results.find(
+      (item) => item.proposalNumber === "議第77号"
+    );
+
+    expect(result?.votes[4]).toBe("excluded");
   });
 });

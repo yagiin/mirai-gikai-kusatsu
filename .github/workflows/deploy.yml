@@ -28,9 +28,14 @@ jobs:
       # マイグレーション適用（idempotent）
       - name: Supabase db push
         run: |
-          supabase db push --include-all --yes --remote
+          if [ -n "$SUPABASE_DB_URL" ]; then
+            supabase db push --db-url "$SUPABASE_DB_URL" --include-all --yes
+          else
+            supabase db push --include-all --yes --remote
+          fi
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
 
       # Google OAuthを設定している環境だけAuth設定を反映する。
       # 未使用環境では空の認証情報で既存設定を上書きしない。

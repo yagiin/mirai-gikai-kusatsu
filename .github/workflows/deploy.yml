@@ -20,16 +20,15 @@ jobs:
       # Supabase プロジェクトへリンク（ノンインタラクティブ）
       - name: Supabase link
         run: |
-          supabase link --project-ref $SUPABASE_PROJECT_REF --password $SUPABASE_DB_PASSWORD
+          supabase link --project-ref $SUPABASE_PROJECT_REF
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
           SUPABASE_PROJECT_REF: ${{ secrets.SUPABASE_PROJECT_REF }}
-          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
 
       # マイグレーション適用（idempotent）
       - name: Supabase db push
         run: |
-          supabase db push --include-all
+          supabase db push --include-all --yes --remote
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
 
@@ -40,7 +39,7 @@ jobs:
           if [ -n "$SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID" ] && \
              [ -n "$SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET" ] && \
              [ -n "$ADMIN_AUTH_CALLBACK_URL" ]; then
-            supabase config push
+            supabase config push --yes
           else
             echo "Google OAuth secrets are not configured; skipping config push."
           fi

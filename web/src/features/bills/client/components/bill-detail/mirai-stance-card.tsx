@@ -1,4 +1,3 @@
-import Image from "next/image";
 import type { BillStatusEnum, MiraiStance } from "../../../shared/types";
 import { getStanceStyles } from "../../../shared/utils/stance-styles";
 
@@ -22,20 +21,17 @@ export function MiraiStanceCard({ stance, billStatus }: MiraiStanceCardProps) {
 
   return (
     <>
-      <h2 className="text-[22px] font-bold mb-4">みらいと維新の風の見解</h2>
+      <h2 className="text-[22px] font-bold mb-4">八木よしと議員の見解</h2>
       <div className="relative p-1 rounded-2xl bg-mirai-gradient">
         <div className="bg-white rounded-lg px-6 pb-8 pt-10">
           <div className="flex flex-col gap-8">
-            {/* ヘッダー部分：ロゴとスタンスバッジ */}
+            {/* ヘッダー部分：議員名とスタンスバッジ */}
             <div className="flex flex-col items-center gap-8">
-              {/* 会派ロゴ */}
-              <div className="relative h-40 w-48">
-                <Image
-                  src="/img/kusatsu-brand-lockup.png"
-                  alt="みらいと維新の風"
-                  fill
-                  className="object-contain"
-                />
+              {/* 議員名 */}
+              <div className="flex h-40 items-center justify-center">
+                <span className="text-3xl font-bold text-mirai-text">
+                  八木よしと
+                </span>
               </div>
 
               {/* スタンスバッジ */}

@@ -6,6 +6,7 @@ import type { GeneralQuestionWithSession } from "../../shared/types";
 
 type Props = {
   questions: GeneralQuestionWithSession[];
+  sessionName: string;
 };
 
 const VISIBLE_QUESTIONS = 3;
@@ -15,7 +16,7 @@ function formatDate(date: string | null) {
   return date.replaceAll("-", "/");
 }
 
-export function HomeGeneralQuestionSection({ questions }: Props) {
+export function HomeGeneralQuestionSection({ questions, sessionName }: Props) {
   const visibleQuestions = questions.slice(0, VISIBLE_QUESTIONS);
 
   if (visibleQuestions.length === 0) {
@@ -41,7 +42,7 @@ export function HomeGeneralQuestionSection({ questions }: Props) {
           </Link>
         </div>
         <p className="text-sm leading-relaxed text-mirai-text">
-          議員が市政について質問し、市が答弁した内容を紹介します
+          {sessionName}で議員が市政について質問し、市が答弁した内容を紹介します
         </p>
       </div>
 

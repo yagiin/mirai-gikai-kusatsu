@@ -12,7 +12,7 @@ export async function updateStance(stanceId: string, data: StanceInput) {
   try {
     await updateMiraiStance(stanceId, data);
 
-    invalidateWebCache([WEB_CACHE_TAGS.BILLS]);
+    await invalidateWebCache([WEB_CACHE_TAGS.BILLS]);
     return { success: true };
   } catch (error) {
     console.error("Error in updateStance:", error);

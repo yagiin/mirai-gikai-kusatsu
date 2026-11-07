@@ -314,6 +314,7 @@ export type Database = {
           id: string
           is_active: boolean
           name: string
+          overview: string | null
           shugiin_url: string | null
           slug: string | null
           start_date: string
@@ -325,6 +326,7 @@ export type Database = {
           id?: string
           is_active?: boolean
           name: string
+          overview?: string | null
           shugiin_url?: string | null
           slug?: string | null
           start_date: string
@@ -336,6 +338,7 @@ export type Database = {
           id?: string
           is_active?: boolean
           name?: string
+          overview?: string | null
           shugiin_url?: string | null
           slug?: string | null
           start_date?: string

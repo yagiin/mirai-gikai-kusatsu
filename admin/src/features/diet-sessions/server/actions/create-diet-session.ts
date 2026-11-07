@@ -9,6 +9,7 @@ import { getErrorMessage } from "@/lib/utils/get-error-message";
 import { trimOrNull } from "@/lib/utils/normalize-string";
 import type { CreateDietSessionInput } from "../../shared/types";
 import { validateDateRange } from "../../shared/utils/validate-date-range";
+import { validateOverview } from "../../shared/utils/validate-overview";
 import { validateSlug } from "../../shared/utils/validate-slug";
 import { createDietSessionRecord } from "../repositories/diet-session-repository";
 
@@ -29,6 +30,11 @@ export async function createDietSession(input: CreateDietSessionInput) {
       return { error: "終了日を入力してください" };
     }
 
+    const overviewError = validateOverview(input.overview);
+    if (overviewError) {
+      return { error: overviewError };
+    }
+
     const slugError = validateSlug(input.slug);
     if (slugError) {
       return { error: slugError };
@@ -43,6 +49,7 @@ export async function createDietSession(input: CreateDietSessionInput) {
       name: input.name.trim(),
       slug: trimOrNull(input.slug),
       shugiin_url: trimOrNull(input.shugiin_url),
+      overview: trimOrNull(input.overview),
       start_date: input.start_date,
       end_date: input.end_date,
     });

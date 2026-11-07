@@ -1,11 +1,9 @@
 "use client";
 
 import type { Route } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { isInterviewPage } from "@/lib/page-layout-utils";
-import { routes } from "@/lib/routes";
 import { policyLinks, primaryLinks } from "./footer.config";
 
 export function Footer() {
@@ -18,33 +16,12 @@ export function Footer() {
   return (
     <footer className="bg-mirai-gradient text-slate-900">
       <div className="mx-auto flex w-full max-w-[500px] flex-col items-center px-6 py-14 pb-20 text-center">
-        <FooterLogoSection />
         <FooterPrimaryLinks />
         <FooterPolicies />
         <FooterForkNotice />
         <FooterCopyright />
       </div>
     </footer>
-  );
-}
-
-function FooterLogoSection() {
-  return (
-    <div className="flex flex-col items-center text-center mb-9">
-      <Link
-        href={routes.home()}
-        aria-label="みらい議会 トップページ"
-        className="rounded-2xl border border-slate-900/10 bg-white px-4 py-3 shadow-sm"
-      >
-        <Image
-          src="/img/kusatsu-brand-lockup.png"
-          alt="みらいと維新の風"
-          width={180}
-          height={149}
-          className="h-auto w-[160px] sm:w-[180px]"
-        />
-      </Link>
-    </div>
   );
 }
 
@@ -108,7 +85,7 @@ function FooterForkNotice() {
 function FooterCopyright() {
   return (
     <div className="text-center text-sm font-medium text-slate-800">
-      © 2026 みらいと維新の風
+      @草津市議会議員・八木よしと
     </div>
   );
 }

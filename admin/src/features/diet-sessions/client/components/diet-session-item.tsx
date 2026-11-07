@@ -19,6 +19,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { env } from "@/lib/env";
 import { deleteDietSession } from "../../server/actions/delete-diet-session";
 import { setActiveDietSession } from "../../server/actions/set-active-diet-session";
@@ -37,6 +38,7 @@ export function DietSessionItem({ session }: DietSessionItemProps) {
   const [editShugiinUrl, setEditShugiinUrl] = useState(
     session.shugiin_url ?? ""
   );
+  const [editOverview, setEditOverview] = useState(session.overview ?? "");
   const [editStartDate, setEditStartDate] = useState(session.start_date);
   const [editEndDate, setEditEndDate] = useState(session.end_date);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -62,6 +64,7 @@ export function DietSessionItem({ session }: DietSessionItemProps) {
       editName === session.name &&
       editSlug === (session.slug ?? "") &&
       editShugiinUrl === (session.shugiin_url ?? "") &&
+      editOverview === (session.overview ?? "") &&
       editStartDate === session.start_date &&
       editEndDate === session.end_date
     ) {
@@ -77,6 +80,7 @@ export function DietSessionItem({ session }: DietSessionItemProps) {
         name: editName,
         slug: editSlug || null,
         shugiin_url: editShugiinUrl || null,
+        overview: editOverview || null,
         start_date: editStartDate,
         end_date: editEndDate,
       });
@@ -118,6 +122,7 @@ export function DietSessionItem({ session }: DietSessionItemProps) {
     setEditName(session.name);
     setEditSlug(session.slug ?? "");
     setEditShugiinUrl(session.shugiin_url ?? "");
+    setEditOverview(session.overview ?? "");
     setEditStartDate(session.start_date);
     setEditEndDate(session.end_date);
     setIsEditing(false);
@@ -193,6 +198,14 @@ export function DietSessionItem({ session }: DietSessionItemProps) {
               placeholder="草津市議会URL（https://www.city.kusatsu.shiga.jp/...）"
               disabled={isSubmitting}
             />
+            <Textarea
+              value={editOverview}
+              onChange={(e) => setEditOverview(e.target.value)}
+              placeholder="この議会の特徴・概要（トップページに掲載）"
+              rows={3}
+              maxLength={500}
+              disabled={isSubmitting}
+            />
           </div>
         ) : (
           <div className="flex-1">
@@ -228,6 +241,11 @@ export function DietSessionItem({ session }: DietSessionItemProps) {
                   草津市議会ページ ↗
                 </a>
               </div>
+            )}
+            {session.overview && (
+              <p className="mt-2 whitespace-pre-wrap text-sm text-gray-700">
+                {session.overview}
+              </p>
             )}
           </div>
         )}
@@ -279,6 +297,9 @@ export function DietSessionItem({ session }: DietSessionItemProps) {
                             <ul className="mt-2 list-disc list-inside text-sm">
                               <li>
                                 トップページに表示される議案が、この市議会会期の議案に切り替わります
+                              </li>
+                              <li>
+                                一般質問と「今回の議会について」の説明も、この会期の内容に切り替わります
                               </li>
                               <li>
                                 現在アクティブな市議会会期は非アクティブになります

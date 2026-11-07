@@ -13,6 +13,7 @@ export default function BillCardPreview() {
   const featuredBill = createMockBill({
     id: "mock-featured",
     is_featured: true,
+    committee_name: "総務常任委員会",
     thumbnail_url: SAMPLE_THUMBNAIL,
     bill_content: {
       id: "mock-content-featured",
@@ -77,7 +78,7 @@ export default function BillCardPreview() {
 
       <ComponentShowcase title="Featured" description="注目バッジ付き">
         <PreviewSection label="is_featured: true">
-          <BillCard bill={featuredBill} />
+          <BillCard bill={featuredBill} showCommitteeName />
         </PreviewSection>
       </ComponentShowcase>
 

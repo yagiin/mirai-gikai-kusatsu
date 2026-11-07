@@ -34,7 +34,7 @@ export function FeaturedBillSection({
       <div className="flex flex-col gap-4">
         {bills.map((bill) => (
           <Link key={bill.id} href={routes.billDetail(bill.id) as Route}>
-            <BillCard bill={bill} />
+            <BillCard bill={bill} showCommitteeName />
           </Link>
         ))}
       </div>

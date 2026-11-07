@@ -24,7 +24,7 @@ describe("bill CSV", () => {
 
   it("IDがある行を既存議案として読み込む", () => {
     const csv = `${header}
-existing-id,議第2号,enacted,可決,予算委員会,2026-06-02,draft,false,true,member,r8-6,,,議第2号,概要,本文,詳しい議第2号,詳しい概要,詳しい本文
+existing-id,議第2号,enacted,可決,予算常任委員会,2026-06-02,draft,false,true,member,r8-6,,,議第2号,概要,本文,詳しい議第2号,詳しい概要,詳しい本文
 `;
 
     expect(parseBillCsv(csv)[0]).toEqual(
@@ -32,9 +32,19 @@ existing-id,議第2号,enacted,可決,予算委員会,2026-06-02,draft,false,tru
         id: "existing-id",
         status: "enacted",
         statusNote: "可決",
-        committeeName: "予算委員会",
+        committeeName: "予算常任委員会",
         originatingHouse: "HC",
       })
+    );
+  });
+
+  it("所管委員会の旧名称を拒否する", () => {
+    const csv = `${header}
+,議第3号,introduced,,予算委員会,2026-06-03,published,false,false,mayor,r8-6,,,議第3号,,,,,
+`;
+
+    expect(() => parseBillCsv(csv)).toThrow(
+      "2行目: committee_nameは指定された委員会名または空欄にしてください"
     );
   });
 

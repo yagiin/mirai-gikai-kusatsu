@@ -12,7 +12,7 @@ export async function createStance(billId: string, data: StanceInput) {
   try {
     await createMiraiStance(billId, data);
 
-    invalidateWebCache([WEB_CACHE_TAGS.BILLS]);
+    await invalidateWebCache([WEB_CACHE_TAGS.BILLS]);
     return { success: true };
   } catch (error) {
     console.error("Error in createStance:", error);

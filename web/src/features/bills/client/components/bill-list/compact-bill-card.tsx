@@ -34,8 +34,13 @@ export function CompactBillCard({ bill, className }: CompactBillCardProps) {
               </>
             )}
           </h3>
-          <div className="flex items-center gap-3">
+          <div className="flex min-w-0 items-center gap-3">
             <BillStatusBadge status={bill.status} className="w-fit" />
+            {bill.committee_name && (
+              <span className="truncate text-xs text-muted-foreground">
+                所管委員会：{bill.committee_name}
+              </span>
+            )}
             {bill.submitted_date && (
               <span className="text-xs text-muted-foreground">
                 {formatDateWithDots(bill.submitted_date)} {statusLabel}

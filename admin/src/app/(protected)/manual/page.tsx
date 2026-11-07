@@ -33,13 +33,13 @@ const csvFields: ManualTableRow[] = [
   },
   {
     label: "status_note",
-    example: "予算委員会で審査中",
+    example: "予算常任委員会で審査中",
     description:
       "詳細ページの「審議のステータス」に表示される説明文に使われます。",
   },
   {
     label: "committee_name",
-    example: "予算委員会",
+    example: "予算常任委員会",
     description:
       "詳細ページの「審議のステータス」内にある「所管委員会」に表示されます。",
   },
@@ -391,8 +391,8 @@ export default function ManualPage() {
           <li>総務常任委員会</li>
           <li>文教厚生常任委員会</li>
           <li>産業建設常任委員会</li>
-          <li>予算委員会</li>
-          <li>決算委員会</li>
+          <li>予算常任委員会</li>
+          <li>決算特別委員会</li>
           <li>委員会審査なし</li>
         </ul>
       </ManualSection>

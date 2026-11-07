@@ -2,12 +2,18 @@ import "server-only";
 
 import { createAdminClient } from "@mirai-gikai/supabase";
 
-export async function findPublishedGeneralQuestions() {
+export async function findPublishedGeneralQuestions(dietSessionId?: string) {
   const supabase = createAdminClient();
-  const { data, error } = await supabase
+  let query = supabase
     .from("general_questions")
     .select("*, diet_sessions(id, name, slug)")
-    .eq("is_published", true)
+    .eq("is_published", true);
+
+  if (dietSessionId) {
+    query = query.eq("diet_session_id", dietSessionId);
+  }
+
+  const { data, error } = await query
     .order("question_date", { ascending: false, nullsFirst: false })
     .order("display_order");
 

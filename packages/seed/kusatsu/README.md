@@ -27,7 +27,15 @@ pnpm kusatsu:bills:update -- --apply
 ローカルデータを含むため、Gitの管理対象外です。
 
 9月定例会の生成データは `published` とし、草津市公式サイトの資料一覧を
-出典URLに設定します。
+出典URLに設定します。審議結果が確定した議案は `enacted` とし、議案の
+ステータス・結果注記・通常版／詳細版本文へ決定内容を反映します。
+
+既に登録済みの令和8年9月定例会へ確定結果を適用する場合は、次を実行します。
+
+```powershell
+pnpm --filter @mirai-gikai/seed kusatsu:bills:finalize:r8-sep
+pnpm --filter @mirai-gikai/seed kusatsu:bills:verify:r8-sep
+```
 
 過去の令和8年2月定例会データを再生成する場合は、次を実行します。
 

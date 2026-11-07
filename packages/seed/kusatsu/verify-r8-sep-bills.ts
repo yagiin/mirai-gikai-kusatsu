@@ -22,7 +22,7 @@ async function verifyR8SepBills() {
   }
   for (const bill of bills) {
     if (
-      bill.status !== "introduced" ||
+      bill.status !== "enacted" ||
       bill.publish_status !== "published" ||
       bill.diet_session_id !== session.id
     ) {
@@ -50,7 +50,9 @@ async function verifyR8SepBills() {
       throw new Error(`通常版・詳細版がそろっていません: ${bill.slug}`);
     }
   }
-  console.log("Verified active September session, 22 published bills, and 44 contents.");
+  console.log(
+    "Verified active September session, 22 enacted bills, and 44 contents."
+  );
 }
 
 verifyR8SepBills().catch((error) => {

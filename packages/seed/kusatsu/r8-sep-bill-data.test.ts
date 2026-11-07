@@ -38,7 +38,12 @@ describe("令和8年9月定例会の配布資料データ", () => {
     );
 
     expect(updated).toHaveLength(22);
-    expect(updated.every((row) => row.status === "introduced")).toBe(true);
+    expect(updated.every((row) => row.status === "enacted")).toBe(true);
+    expect(updated[0]?.statusNote).toBe("原案可決（2026年9月1日）");
+    expect(updated[1]?.statusNote).toBe("認定（2026年9月16日）");
+    expect(updated[7]?.statusNote).toBe(
+      "原案可決および認定（2026年9月16日）"
+    );
     expect(updated.every((row) => row.publishStatus === "published")).toBe(
       true
     );
@@ -57,6 +62,7 @@ describe("令和8年9月定例会の配布資料データ", () => {
     expect(updated.normalSummary).toContain("7,772万4千円");
     expect(updated.normalContent).toContain("市長選挙執行費");
     expect(updated.normalContent).toContain("開会日追加提案");
+    expect(updated.normalContent).toContain("2026年9月1日に原案可決");
   });
 
   it("配布資料と件名が一致しない行を拒否する", () => {

@@ -12,6 +12,37 @@ export interface R8SepBillData {
   featured?: boolean;
 }
 
+const R8_SEP_DECISIONS: Record<number, { result: string; date: string }> = {
+  52: { result: "原案可決", date: "2026-09-01" },
+  53: { result: "認定", date: "2026-09-16" },
+  54: { result: "認定", date: "2026-09-16" },
+  55: { result: "認定", date: "2026-09-16" },
+  56: { result: "認定", date: "2026-09-16" },
+  57: { result: "認定", date: "2026-09-16" },
+  58: { result: "認定", date: "2026-09-16" },
+  59: { result: "原案可決および認定", date: "2026-09-16" },
+  60: { result: "原案可決および認定", date: "2026-09-16" },
+  61: { result: "原案可決", date: "2026-09-16" },
+  62: { result: "原案可決", date: "2026-09-16" },
+  63: { result: "原案可決", date: "2026-09-16" },
+  64: { result: "原案可決", date: "2026-09-16" },
+  65: { result: "原案可決", date: "2026-09-16" },
+  66: { result: "原案可決", date: "2026-09-16" },
+  67: { result: "原案可決", date: "2026-09-16" },
+  68: { result: "原案可決", date: "2026-09-16" },
+  69: { result: "原案可決", date: "2026-09-16" },
+  70: { result: "原案可決", date: "2026-09-16" },
+  71: { result: "原案可決", date: "2026-09-16" },
+  72: { result: "原案可決", date: "2026-09-16" },
+  73: { result: "原案可決", date: "2026-09-01" },
+};
+
+function getDecision(number: number) {
+  const decision = R8_SEP_DECISIONS[number];
+  if (!decision) throw new Error(`議第${number}号の審議結果がありません`);
+  return decision;
+}
+
 export const R8_SEP_BILLS: R8SepBillData[] = [
   {
     number: 52,
@@ -258,7 +289,8 @@ function buildContent(
   title: string,
   summary: string,
   details: string[],
-  detailed: boolean
+  detailed: boolean,
+  decisionNote: string
 ) {
   const points = details.map((detail) => `- ${detail}`).join("\n");
   const heading = detailed ? "議案の内容" : "この議案のポイント";
@@ -272,7 +304,7 @@ ${points}
 
 ## 現在の状況
 
-2026年9月1日に提出され、審議中です。
+${decisionNote}。
 
 ## 出典
 
@@ -318,10 +350,19 @@ export function applyR8SepOfficialData(row: BillUpdateRow): BillUpdateRow {
   }
 
   const normalTitle = data.name.replace(/案$/, "");
+  const decision = getDecision(number);
+  const decisionDate = new Date(`${decision.date}T00:00:00+09:00`)
+    .toLocaleDateString("ja-JP", {
+      timeZone: "Asia/Tokyo",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  const decisionNote = `${decisionDate}に${decision.result}`;
   return {
     ...row,
-    status: "introduced",
-    statusNote: "審議中（2026年9月1日提出）",
+    status: "enacted",
+    statusNote: `${decision.result}（${decisionDate}）`,
     submittedDate: "2026-09-01",
     publishStatus: "published",
     isFeatured: data.featured ?? false,
@@ -333,7 +374,8 @@ export function applyR8SepOfficialData(row: BillUpdateRow): BillUpdateRow {
       normalTitle,
       data.summary,
       data.details,
-      false
+      false,
+      decisionNote
     ),
     hardTitle: data.name,
     hardSummary: data.summary,
@@ -341,7 +383,8 @@ export function applyR8SepOfficialData(row: BillUpdateRow): BillUpdateRow {
       data.name,
       data.summary,
       data.details,
-      true
+      true,
+      decisionNote
     ),
   };
 }

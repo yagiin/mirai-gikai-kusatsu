@@ -11,7 +11,8 @@ Supabaseを起動した状態で、リポジトリのルートから実行しま
 # 現在のDBから編集用CSVを書き出す
 pnpm kusatsu:bills:export
 
-# 令和8年2月定例会の公式資料を基にCSVを更新する
+# 令和8年9月定例会の配布資料を基にCSVを更新する
+# （開会日追加提案の議第73号を含む）
 pnpm kusatsu:bills:prepare
 
 # CSVとDBの整合性だけを検査する（DBは変更しない）
@@ -24,6 +25,15 @@ pnpm kusatsu:bills:update -- --apply
 編集用CSVは `data/bills-update.csv`、適用前バックアップは
 `.local-data/kusatsu-backups/` に保存されます。どちらも環境固有のIDや
 ローカルデータを含むため、Gitの管理対象外です。
+
+9月定例会の生成データは `published` とし、草津市公式サイトの資料一覧を
+出典URLに設定します。
+
+過去の令和8年2月定例会データを再生成する場合は、次を実行します。
+
+```powershell
+pnpm --filter @mirai-gikai/seed kusatsu:bills:prepare:r8-feb
+```
 
 ## 状態の対応
 

@@ -25,23 +25,13 @@ export function MiraiStanceCard({ stance, billStatus }: MiraiStanceCardProps) {
       <div className="relative p-1 rounded-2xl bg-mirai-gradient">
         <div className="bg-white rounded-lg px-6 pb-8 pt-10">
           <div className="flex flex-col gap-8">
-            {/* ヘッダー部分：議員名とスタンスバッジ */}
-            <div className="flex flex-col items-center gap-8">
-              {/* 議員名 */}
-              <div className="flex h-40 items-center justify-center">
-                <span className="text-3xl font-bold text-mirai-text">
-                  八木よしと
-                </span>
-              </div>
-
-              {/* スタンスバッジ */}
-              <div
-                className={`w-full py-4 ${styles.bg} ${styles.border ? `border ${styles.border}` : ""} rounded-lg flex justify-center items-center`}
-              >
-                <span className={`${styles.textColor} text-xl font-bold`}>
-                  {styles.label}
-                </span>
-              </div>
+            {/* スタンスバッジ */}
+            <div
+              className={`w-full py-4 ${styles.bg} ${styles.border ? `border ${styles.border}` : ""} rounded-lg flex justify-center items-center`}
+            >
+              <span className={`${styles.textColor} text-xl font-bold`}>
+                {styles.label}
+              </span>
             </div>
 
             {/* コメント部分 */}

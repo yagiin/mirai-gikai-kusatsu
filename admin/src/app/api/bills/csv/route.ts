@@ -5,11 +5,7 @@ import {
   serializeBillCsv,
 } from "@/features/bills-csv/shared/bill-csv";
 
-interface GetBillsCsvRequest {
-  url: string;
-}
-
-export async function GET(request: GetBillsCsvRequest) {
+export async function GET(request: Request) {
   await requireAdmin();
 
   const { searchParams } = new URL(request.url);

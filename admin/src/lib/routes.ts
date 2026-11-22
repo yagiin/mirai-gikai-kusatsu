@@ -18,6 +18,7 @@ export const routes = {
   manual: () => "/manual" as const,
   billCsvManualPdf: () => "/manuals/kusatsu-bill-csv-manual.pdf" as const,
   dietSessions: () => "/diet-sessions" as const,
+  homePageSettings: () => "/home-page-settings" as const,
   experts: () => "/experts" as const,
   interviews: () => "/interviews" as const,
   interviewTopicNew: () => "/interviews/topics/new" as const,

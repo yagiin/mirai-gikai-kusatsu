@@ -1,6 +1,22 @@
 import "server-only";
+import type { SessionDocument } from "@mirai-gikai/shared/session-documents";
 
 import { createAdminClient } from "@mirai-gikai/supabase";
+
+export async function updateSessionDocumentsRecord(
+  id: string,
+  documents: SessionDocument[]
+) {
+  const supabase = createAdminClient();
+  const { data, error } = await supabase
+    .from("diet_sessions")
+    .update({ related_documents: documents })
+    .eq("id", id)
+    .select("id")
+    .single();
+  if (error) throw new Error(`関連資料の保存に失敗しました: ${error.message}`);
+  return data;
+}
 
 export async function findAllDietSessions() {
   const supabase = createAdminClient();

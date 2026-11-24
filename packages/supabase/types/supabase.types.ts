@@ -315,6 +315,7 @@ export type Database = {
           is_active: boolean
           name: string
           overview: string | null
+          related_documents: Json
           shugiin_url: string | null
           slug: string | null
           start_date: string
@@ -327,6 +328,7 @@ export type Database = {
           is_active?: boolean
           name: string
           overview?: string | null
+          related_documents?: Json
           shugiin_url?: string | null
           slug?: string | null
           start_date: string
@@ -339,6 +341,7 @@ export type Database = {
           is_active?: boolean
           name?: string
           overview?: string | null
+          related_documents?: Json
           shugiin_url?: string | null
           slug?: string | null
           start_date?: string

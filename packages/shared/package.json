@@ -8,6 +8,10 @@
     "test:watch": "vitest"
   },
   "exports": {
+    "./session-documents": {
+      "types": "./src/session-documents/session-documents.ts",
+      "default": "./src/session-documents/session-documents.ts"
+    },
     "./ai/models": {
       "types": "./src/ai/models.ts",
       "default": "./src/ai/models.ts"

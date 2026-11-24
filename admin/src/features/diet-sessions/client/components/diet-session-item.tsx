@@ -25,6 +25,7 @@ import { deleteDietSession } from "../../server/actions/delete-diet-session";
 import { setActiveDietSession } from "../../server/actions/set-active-diet-session";
 import { updateDietSession } from "../../server/actions/update-diet-session";
 import type { DietSession } from "../../shared/types";
+import { SessionDocumentsEditor } from "./session-documents-editor";
 
 type DietSessionItemProps = {
   session: DietSession;
@@ -363,6 +364,11 @@ export function DietSessionItem({ session }: DietSessionItemProps) {
           )}
         </div>
       </div>
+      <SessionDocumentsEditor
+        key={session.id}
+        sessionId={session.id}
+        value={session.related_documents}
+      />
     </div>
   );
 }
